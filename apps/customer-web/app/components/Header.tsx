@@ -26,33 +26,34 @@ export function Header() {
             </span>
           </Link>
 
-          <div className="hidden flex-1 max-w-md md:block">
+          <Link
+            href="/search"
+            className="hidden flex-1 max-w-md md:block"
+            aria-label="Search"
+          >
             <div className="relative">
               <Search
                 size={18}
                 className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
                 aria-hidden="true"
               />
-              <input
-                type="search"
-                placeholder="Search for groceries, stores..."
-                aria-label="Search"
-                className="h-10 w-full rounded-button border border-gray-200 bg-white pl-10 pr-3 text-sm
-                           text-gray-900 placeholder:text-gray-400
-                           transition focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100"
-              />
+              <div
+                className="flex h-10 w-full cursor-text items-center rounded-button border border-gray-200 bg-white pl-10 pr-3 text-sm text-gray-400 transition focus-within:border-brand-400 focus-within:outline-none focus-within:ring-4 focus-within:ring-brand-100"
+              >
+                Search for groceries, stores...
+              </div>
             </div>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
+            <Link
+              href="/search"
               aria-label="Search"
               className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-button
                          text-gray-700 hover:bg-gray-100 transition-colors"
             >
               <Search size={20} aria-hidden="true" />
-            </button>
+            </Link>
             <ButtonLink href="/login" variant="outline" size="md">
               Login
             </ButtonLink>
