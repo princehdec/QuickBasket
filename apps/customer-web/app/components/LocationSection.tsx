@@ -1,8 +1,13 @@
+"use client";
+
 import { ChevronDown, MapPin, Navigation } from "lucide-react";
 import { Container, Section } from "./ui/Section";
 import { Button } from "./ui/Button";
+import { useLocation } from "../context/LocationContext";
 
 export function LocationSection() {
+  const { selectedLocation, setIsSheetOpen } = useLocation();
+
   return (
     <Section className="pt-4 pb-2 sm:pt-5 sm:pb-3">
       <Container>
@@ -13,6 +18,7 @@ export function LocationSection() {
         >
           <button
             type="button"
+            onClick={() => setIsSheetOpen(true)}
             className="flex flex-1 items-center gap-3.5 rounded-button
                        text-left transition-colors hover:bg-gray-50 -m-2 p-2"
           >
@@ -28,12 +34,25 @@ export function LocationSection() {
               <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-gray-400">
                 Deliver to
               </p>
-              <p className="mt-0.5 truncate text-sm font-semibold text-gray-900">
-                Current Location
-              </p>
-              <p className="truncate text-xs text-gray-400">
-                Select your address to see nearby stores
-              </p>
+              {selectedLocation ? (
+                <>
+                  <p className="mt-0.5 truncate text-sm font-semibold text-gray-900">
+                    {selectedLocation.label}
+                  </p>
+                  <p className="truncate text-xs text-gray-400">
+                    {selectedLocation.address}, {selectedLocation.city}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="mt-0.5 truncate text-sm font-semibold text-gray-900">
+                    Current Location
+                  </p>
+                  <p className="truncate text-xs text-gray-400">
+                    Select your address to see nearby stores
+                  </p>
+                </>
+              )}
             </div>
 
             <ChevronDown
@@ -45,15 +64,29 @@ export function LocationSection() {
 
           <span className="hidden h-10 w-px bg-gray-100 sm:block" aria-hidden="true" />
 
-          <Button
-            type="button"
-            variant="outline"
-            size="md"
-            className="self-start sm:self-center gap-2"
-          >
-            <Navigation size={16} aria-hidden="true" />
-            Change Address
-          </Button>
+          {selectedLocation ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              className="self-start sm:self-center gap-2"
+              onClick={() => setIsSheetOpen(true)}
+            >
+              <Navigation size={16} aria-hidden="true" />
+              Change
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              className="self-start sm:self-center gap-2"
+              onClick={() => setIsSheetOpen(true)}
+            >
+              <Navigation size={16} aria-hidden="true" />
+              Set Address
+            </Button>
+          )}
         </div>
       </Container>
     </Section>
