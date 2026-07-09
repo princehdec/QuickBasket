@@ -1,0 +1,26 @@
+import { pgTable, uuid, varchar, text, decimal, boolean, timestamp, jsonb, } from "drizzle-orm/pg-core";
+export const stores = pgTable("stores", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 200 }).notNull(),
+    slug: varchar("slug", { length: 200 }).notNull().unique(),
+    description: text("description"),
+    city: varchar("city", { length: 100 }).notNull(),
+    address: text("address"),
+    latitude: varchar("latitude", { length: 20 }),
+    longitude: varchar("longitude", { length: 20 }),
+    phone: varchar("phone", { length: 15 }),
+    email: varchar("email", { length: 255 }),
+    logo: text("logo"),
+    banner: text("banner"),
+    rating: decimal("rating", { precision: 2, scale: 1 }).default("0"),
+    totalRatings: varchar("total_ratings", { length: 10 }).default("0"),
+    deliveryTime: varchar("delivery_time", { length: 50 }),
+    deliveryFee: varchar("delivery_fee", { length: 20 }).default("0"),
+    minOrder: varchar("min_order", { length: 20 }).default("0"),
+    isOpen: boolean("is_open").notNull().default(true),
+    isActive: boolean("is_active").notNull().default(true),
+    tags: jsonb("tags").$type().default([]),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+//# sourceMappingURL=stores.js.map
