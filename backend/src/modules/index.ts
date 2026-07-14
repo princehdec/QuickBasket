@@ -9,7 +9,7 @@ import { usersRouter } from "./users/index";
 const router = Router();
 
 router.use("/auth", authRouter);
-router.use("/stores", businessesRouter);
+router.use("/businesses", businessesRouter);
 router.use("/products", productsRouter);
 router.use("/cart", cartRouter);
 router.use("/orders", ordersRouter);

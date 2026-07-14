@@ -1,0 +1,61 @@
+export type CreateBusinessDTO = {
+  name: string;
+  slug: string;
+  description?: string;
+  businessType: "GROCERY" | "FOOD" | "PHARMACY" | "ELECTRONICS" | "PLUMBER" | "FASHION" | "BEAUTY" | "PETS" | "FLOWERS" | "STATIONERY" | "LAUNDRY" | "PORTER" | "OTHER";
+  phone?: string;
+  email?: string;
+  logo?: string;
+  banner?: string;
+  address?: string;
+  city: string;
+  latitude?: string;
+  longitude?: string;
+  deliveryFee?: string;
+  minOrder?: string;
+  tags?: string[];
+};
+
+export type UpdateBusinessDTO = {
+  name?: string;
+  slug?: string;
+  description?: string;
+  businessType?: "GROCERY" | "FOOD" | "PHARMACY" | "ELECTRONICS" | "PLUMBER" | "FASHION" | "BEAUTY" | "PETS" | "FLOWERS" | "STATIONERY" | "LAUNDRY" | "PORTER" | "OTHER";
+  phone?: string;
+  email?: string;
+  logo?: string;
+  banner?: string;
+  address?: string;
+  city?: string;
+  latitude?: string;
+  longitude?: string;
+  deliveryFee?: string;
+  minOrder?: string;
+  tags?: string[];
+  isActive?: boolean;
+};
+
+export type BusinessResponseDTO = {
+  id: string;
+  ownerId: string | null;
+  name: string;
+  slug: string;
+  description: string | null;
+  businessType: string;
+  phone: string | null;
+  email: string | null;
+  logo: string | null;
+  banner: string | null;
+  address: string | null;
+  city: string;
+  latitude: string | null;
+  longitude: string | null;
+  rating: string | null;
+  totalRatings: string | null;
+  deliveryFee: string | null;
+  minOrder: string | null;
+  tags: string[];
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};

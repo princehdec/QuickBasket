@@ -10,8 +10,17 @@ export const userRoleEnum = pgEnum("user_role", [
 export const businessTypeEnum = pgEnum("business_type", [
   "GROCERY",
   "FOOD",
+  "PHARMACY",
+  "ELECTRONICS",
+  "PLUMBER",
+  "FASHION",
+  "BEAUTY",
+  "PETS",
+  "FLOWERS",
+  "STATIONERY",
   "LAUNDRY",
   "PORTER",
+  "OTHER",
 ]);
 
 export const orderStatusEnum = pgEnum("order_status", [
