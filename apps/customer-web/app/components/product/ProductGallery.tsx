@@ -15,15 +15,15 @@ export function ProductGallery({
 
   return (
     <div className="space-y-3">
-      <div className="group relative overflow-hidden rounded-xl">
+      <div className="group relative overflow-hidden rounded-card ring-1 ring-inset ring-paper-900/5">
         <div
           className={cn(
-            "flex h-80 items-center justify-center rounded-xl bg-gradient-to-br sm:h-96",
+            "flex h-80 items-center justify-center rounded-card bg-gradient-to-br sm:h-96",
             images[selected]
           )}
           aria-label={name}
         />
-        <span className="pointer-events-none absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/70 text-gray-500 backdrop-blur transition-opacity group-hover:opacity-100 sm:opacity-0">
+        <span className="pointer-events-none absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/70 text-gray-600 backdrop-blur transition-opacity group-hover:opacity-100 sm:opacity-0">
           <ZoomIn size={16} />
         </span>
       </div>
@@ -37,14 +37,14 @@ export function ProductGallery({
               onClick={() => setSelected(i)}
               aria-label={`View image ${i + 1}`}
               className={cn(
-                "h-16 w-16 shrink-0 overflow-hidden rounded-lg ring-2 ring-offset-1 transition-all",
+                "h-16 w-16 shrink-0 overflow-hidden rounded-xl ring-2 ring-offset-2 ring-offset-background transition-all",
                 selected === i
-                  ? "ring-brand-500"
+                  ? "ring-brand-600"
                   : "ring-transparent opacity-60 hover:opacity-100"
               )}
             >
               <div
-                className={cn("h-full w-full rounded-lg bg-gradient-to-br", img)}
+                className={cn("h-full w-full rounded-xl bg-gradient-to-br", img)}
               />
             </button>
           ))}

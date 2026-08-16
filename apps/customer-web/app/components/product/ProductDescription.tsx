@@ -9,11 +9,11 @@ export function ProductDescription({ description }: { description: string }) {
 
   return (
     <section>
-      <h2 className="text-base font-bold text-gray-900">Description</h2>
+      <h2 className="font-display text-base font-bold tracking-tight text-gray-900">Description</h2>
       <div className="relative mt-2">
         <p
           className={cn(
-            "text-sm leading-relaxed text-gray-600",
+            "text-sm leading-relaxed text-gray-700",
             !expanded && "line-clamp-3"
           )}
         >
@@ -23,7 +23,7 @@ export function ProductDescription({ description }: { description: string }) {
           <button
             type="button"
             onClick={() => setExpanded(!expanded)}
-            className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
+            className="mt-1 inline-flex items-center gap-1 text-sm font-bold text-brand-700 transition-colors hover:text-brand-800"
           >
             {expanded ? "Show Less" : "Read More"}
             <ChevronDown

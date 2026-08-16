@@ -44,14 +44,14 @@ export function NutritionAccordion({
       id: "nutrition",
       title: "Nutritional Information",
       content: (
-        <div className="divide-y divide-gray-100 rounded-lg border border-gray-100">
+        <div className="divide-y divide-paper-200/80 rounded-xl border border-paper-200/80">
           {nutritionalInfo.map((item, i) => (
             <div
               key={i}
               className="flex items-center justify-between px-4 py-2.5 text-sm"
             >
               <span className="text-gray-600">{item.label}</span>
-              <span className="font-medium text-gray-900">{item.value}</span>
+              <span className="font-semibold tabular-nums text-gray-900">{item.value}</span>
             </div>
           ))}
         </div>
@@ -80,8 +80,8 @@ export function NutritionAccordion({
 
   return (
     <section>
-      <h2 className="text-base font-bold text-gray-900">Product Details</h2>
-      <div className="mt-2 divide-y divide-gray-100 rounded-xl border border-gray-100 bg-white">
+      <h2 className="font-display text-base font-bold tracking-tight text-gray-900">Product Details</h2>
+      <div className="mt-2 divide-y divide-paper-200/80 rounded-card border border-paper-200/70 bg-surface shadow-soft">
         {sections.map((section) => {
           const isOpen = openId === section.id;
           return (
@@ -89,13 +89,13 @@ export function NutritionAccordion({
               <button
                 type="button"
                 onClick={() => toggle(section.id)}
-                className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50"
+                className="flex w-full items-center justify-between px-4 py-3.5 text-left font-display text-sm font-bold text-gray-900 transition-colors hover:bg-paper-100/50"
               >
                 {section.title}
                 {isOpen ? (
-                  <ChevronDown size={16} className="text-gray-400" />
+                  <ChevronDown size={16} className="text-paper-400" />
                 ) : (
-                  <ChevronRight size={16} className="text-gray-400" />
+                  <ChevronRight size={16} className="text-paper-400" />
                 )}
               </button>
               <div

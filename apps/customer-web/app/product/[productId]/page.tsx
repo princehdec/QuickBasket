@@ -15,6 +15,7 @@ import { RelatedProducts } from "../../components/product/RelatedProducts";
 import { BoughtTogether } from "../../components/product/BoughtTogether";
 import { StickyPurchaseBar } from "../../components/product/StickyPurchaseBar";
 import { Button } from "../../components/ui/Button";
+import { EmptyState } from "../../components/ui/EmptyState";
 
 export default function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
@@ -27,53 +28,53 @@ export default function ProductPage() {
 
   if (!product || !detail) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#F8F9FA] px-4 text-center">
-        <span className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 text-gray-400">
-          <Construction size={36} />
-        </span>
-        <h1 className="text-2xl font-bold text-gray-900">Product not found</h1>
-        <p className="text-sm text-gray-500">
-          The product you&apos;re looking for doesn&apos;t exist or may have been removed.
-        </p>
-        <Link href="/stores">
-          <Button variant="outline" size="md">
-            Browse Stores
-          </Button>
-        </Link>
+      <div className="hero-wash flex min-h-screen flex-col items-center justify-center px-4">
+        <EmptyState
+          icon={Construction}
+          title="Product not found"
+          description="The product you're looking for doesn't exist or may have been removed."
+          action={
+            <Link href="/stores">
+              <Button variant="outline" size="md">
+                Browse Stores
+              </Button>
+            </Link>
+          }
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] pb-20 md:pb-0">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       {/* Breadcrumb */}
-      <div className="border-b border-gray-100 bg-white">
-        <div className="mx-auto flex h-12 max-w-7xl items-center gap-1.5 px-4 text-sm text-gray-500 sm:px-6 lg:px-8">
+      <div className="border-b border-paper-200/80 bg-surface">
+        <div className="mx-auto flex h-12 max-w-7xl items-center gap-1.5 px-4 text-sm text-gray-600 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="transition-colors hover:text-brand-600"
+            className="transition-colors hover:text-brand-700"
           >
             Home
           </Link>
-          <ChevronRight size={14} className="text-gray-300" />
+          <ChevronRight size={14} className="text-paper-400" />
           {store && (
             <>
               <Link
                 href={`/store/${store.id}`}
-                className="truncate transition-colors hover:text-brand-600"
+                className="truncate transition-colors hover:text-brand-700"
               >
                 {store.name}
               </Link>
-              <ChevronRight size={14} className="text-gray-300" />
+              <ChevronRight size={14} className="text-paper-400" />
             </>
           )}
           {category && (
             <>
-              <span className="text-gray-400">{category.name}</span>
-              <ChevronRight size={14} className="text-gray-300" />
+              <span className="text-gray-500">{category.name}</span>
+              <ChevronRight size={14} className="text-paper-400" />
             </>
           )}
-          <span className="truncate font-medium text-gray-900">
+          <span className="truncate font-semibold text-gray-900">
             {product.name}
           </span>
         </div>

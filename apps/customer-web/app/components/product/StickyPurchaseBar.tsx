@@ -16,11 +16,11 @@ export function StickyPurchaseBar({
   const cartItem = items.find((i) => i.product.id === product.id);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.05)] md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-paper-200/80 bg-surface/95 shadow-bar backdrop-blur-md md:hidden">
       <div className="flex h-16 items-center justify-between px-4">
         <div>
-          <p className="text-sm text-gray-500">Total Price</p>
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-paper-500">Total Price</p>
+          <p className="font-display text-lg font-extrabold tabular-nums text-gray-900">
             ₹{product.price * (cartItem?.quantity ?? 1)}
           </p>
         </div>
@@ -36,7 +36,7 @@ export function StickyPurchaseBar({
             type="button"
             onClick={() => addItem(product)}
             disabled={detail.stockStatus === "out_of_stock"}
-            className="flex h-10 items-center gap-2 rounded-button bg-brand-500 px-6 text-sm font-bold text-white shadow-sm shadow-brand-500/20 transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-10 items-center gap-2 rounded-button bg-brand-600 px-6 font-display text-sm font-bold text-paper-50 shadow-[0_3px_12px_-3px_rgb(18_50_30/0.5)] transition-all duration-200 hover:bg-brand-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Add to Cart
           </button>
