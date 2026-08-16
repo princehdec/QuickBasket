@@ -21,24 +21,24 @@ const slides: Slide[] = [
     eyebrow: "Limited time",
     title: "20% OFF",
     description: "On your first grocery order",
-    gradient: "from-brand-500 via-brand-600 to-brand-700",
-    decor: "from-brand-300/30",
+    gradient: "from-turmeric-500 via-turmeric-600 to-[#8a5410]",
+    decor: "from-turmeric-200/30",
   },
   {
     id: "free-delivery",
     eyebrow: "Everyday",
     title: "Free Delivery",
     description: "On all orders above ₹199",
-    gradient: "from-orange-500 via-rose-500 to-rose-600",
-    decor: "from-rose-300/30",
+    gradient: "from-brand-500 via-brand-600 to-brand-800",
+    decor: "from-turmeric-200/25",
   },
   {
     id: "fresh-produce",
     eyebrow: "Farm fresh",
     title: "Fresh Fruits & Vegetables",
     description: "Hand-picked daily from local farms",
-    gradient: "from-amber-400 via-orange-500 to-brand-600",
-    decor: "from-amber-300/30",
+    gradient: "from-brand-400 via-brand-600 to-turmeric-600",
+    decor: "from-brand-200/30",
   },
 ];
 
@@ -83,7 +83,7 @@ export function OfferBanner() {
     <Section className="py-4 sm:py-6">
       <Container>
         <div
-          className="relative overflow-hidden rounded-card shadow-lg"
+          className="relative overflow-hidden rounded-card shadow-lift ring-1 ring-inset ring-black/5"
           role="region"
           aria-roledescription="carousel"
           aria-label="Promotional offers"
@@ -121,11 +121,11 @@ export function OfferBanner() {
                   aria-hidden="true"
                 />
 
-                <div className="relative z-10 max-w-[55%] text-white sm:max-w-[50%]">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-white/70">
+                <div className="relative z-10 max-w-[55%] text-paper-50 sm:max-w-[50%]">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/70">
                     {slide.eyebrow}
                   </p>
-                  <h2 className="mt-1.5 text-2xl font-extrabold leading-tight sm:text-3xl lg:text-4xl">
+                  <h2 className="mt-1.5 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl lg:text-4xl">
                     {slide.title}
                   </h2>
                   <p className="mt-1.5 text-sm leading-relaxed text-white/85 sm:text-base">
@@ -135,7 +135,7 @@ export function OfferBanner() {
                     href="/grocery"
                     variant="tertiary"
                     size="sm"
-                    className="mt-4"
+                    className="mt-4 border-0 bg-paper-50 text-gray-900 hover:bg-white"
                   >
                     Shop Now
                     <ArrowRight size={14} aria-hidden="true" />
@@ -152,7 +152,7 @@ export function OfferBanner() {
                       return (
                         <span
                           key={i}
-                          className="flex h-13 w-13 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm text-white ring-1 ring-inset ring-white/20"
+                          className="flex h-13 w-13 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm text-paper-50 ring-1 ring-inset ring-white/25"
                         >
                           <Icon size={22} />
                         </span>
@@ -169,7 +169,7 @@ export function OfferBanner() {
             onClick={prev}
             aria-label="Previous offer"
             className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full
-                       bg-white/15 p-2 text-white backdrop-blur-md transition
+                       bg-white/15 p-2 text-paper-50 backdrop-blur-md transition
                        hover:bg-white/30 hover:scale-105 active:scale-95
                        focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
@@ -180,7 +180,7 @@ export function OfferBanner() {
             onClick={next}
             aria-label="Next offer"
             className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full
-                       bg-white/15 p-2 text-white backdrop-blur-md transition
+                       bg-white/15 p-2 text-paper-50 backdrop-blur-md transition
                        hover:bg-white/30 hover:scale-105 active:scale-95
                        focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
@@ -198,7 +198,7 @@ export function OfferBanner() {
                 className={cn(
                   "h-2 rounded-full transition-all duration-300",
                   index === active
-                    ? "w-6 bg-white"
+                    ? "w-6 bg-paper-50"
                     : "w-2 bg-white/50 hover:bg-white/75"
                 )}
               />

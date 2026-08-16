@@ -33,20 +33,20 @@ export function LocationSheet() {
   return (
     <div className="fixed inset-0 z-50">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-gray-950/45 backdrop-blur-sm"
         onClick={() => setIsSheetOpen(false)}
         aria-hidden="true"
       />
-      <div className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white shadow-2xl">
-        <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-gray-300" aria-hidden="true" />
+      <div className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-sheet bg-surface shadow-sheet animate-slide-up">
+        <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-paper-300" aria-hidden="true" />
         <div className="px-4 pb-8 pt-2 sm:px-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-bold text-gray-900">Select Location</h2>
+            <h2 className="font-display text-lg font-bold tracking-tight text-gray-900">Select Location</h2>
             <button
               type="button"
               onClick={() => setIsSheetOpen(false)}
               aria-label="Close"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-paper-200/70 hover:text-gray-700"
             >
               <X size={18} />
             </button>

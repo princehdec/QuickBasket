@@ -16,22 +16,22 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 const colorMap: Record<string, string> = {
-  Home: "bg-amber-50 text-amber-600",
-  Work: "bg-blue-50 text-blue-600",
-  Other: "bg-gray-100 text-gray-600",
+  Home: "bg-turmeric-100 text-turmeric-700",
+  Work: "bg-info/10 text-info",
+  Other: "bg-paper-100 text-gray-600",
 };
 
 export function SavedAddresses({ onSelect }: { onSelect: (loc: Location) => void }) {
   return (
     <div>
-      <h3 className="mb-3 text-sm font-semibold text-gray-900">Saved Addresses</h3>
+      <h3 className="mb-3 font-display text-sm font-bold text-gray-900">Saved Addresses</h3>
       <div className="space-y-2.5">
         {savedAddresses.map((addr) => (
           <button
             key={addr.id}
             type="button"
             onClick={() => onSelect(addr)}
-            className="flex w-full items-center gap-3.5 rounded-card border border-gray-100 p-4 text-left transition-all hover:border-gray-200 hover:shadow-sm"
+            className="flex w-full items-center gap-3.5 rounded-card border border-paper-200/80 p-4 text-left transition-all hover:border-paper-300 hover:shadow-soft"
           >
             <span
               className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${colorMap[addr.label] || colorMap.Other}`}
@@ -39,8 +39,8 @@ export function SavedAddresses({ onSelect }: { onSelect: (loc: Location) => void
               {iconMap[addr.label] || iconMap.Other}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-gray-900">{addr.label}</p>
-              <p className="mt-0.5 truncate text-xs text-gray-500">
+              <p className="font-display text-sm font-bold text-gray-900">{addr.label}</p>
+              <p className="mt-0.5 truncate text-xs text-gray-600">
                 {addr.address}, {addr.city}
               </p>
             </div>

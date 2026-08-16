@@ -16,12 +16,12 @@ export function AddressConfirmation({
   return (
     <div className="py-4">
       <div className="flex flex-col items-center gap-4 text-center">
-        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-100 text-brand-700">
           <MapPin size={28} />
         </span>
         <div>
-          <p className="text-base font-semibold text-gray-900">Confirm delivery to</p>
-          <p className="mt-1 text-sm leading-relaxed text-gray-500">
+          <p className="font-display text-base font-bold text-gray-900">Confirm delivery to</p>
+          <p className="mt-1 text-sm leading-relaxed text-gray-600">
             {location.label ? `${location.label} — ` : ""}
             {location.address}, {location.city}
           </p>

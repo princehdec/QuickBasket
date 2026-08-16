@@ -12,43 +12,44 @@ export function LocationSection() {
     <Section className="pt-4 pb-2 sm:pt-5 sm:pb-3">
       <Container>
         <div
-          className="flex flex-col gap-3 rounded-card border border-gray-100 bg-white
-                     p-4 shadow-md sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-4
-                     hover:shadow-lg transition-all duration-200"
+          className="flex flex-col gap-3 rounded-card border border-paper-200/80 bg-surface
+                     p-4 shadow-soft sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-4
+                     hover:shadow-lift transition-all duration-200"
         >
           <button
             type="button"
             onClick={() => setIsSheetOpen(true)}
             className="flex flex-1 items-center gap-3.5 rounded-button
-                       text-left transition-colors hover:bg-gray-50 -m-2 p-2"
+                       text-left transition-colors hover:bg-paper-100/60 -m-2 p-2"
           >
             <span
               className="flex h-12 w-12 shrink-0 items-center justify-center
-                         rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-sm"
+                         rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-paper-50
+                         shadow-[0_3px_10px_-2px_rgb(18_50_30/0.4)]"
               aria-hidden="true"
             >
               <MapPin size={20} />
             </span>
 
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-gray-400">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-paper-500">
                 Deliver to
               </p>
               {selectedLocation ? (
                 <>
-                  <p className="mt-0.5 truncate text-sm font-semibold text-gray-900">
+                  <p className="mt-0.5 truncate text-sm font-bold text-gray-900">
                     {selectedLocation.label}
                   </p>
-                  <p className="truncate text-xs text-gray-400">
+                  <p className="truncate text-xs text-gray-500">
                     {selectedLocation.address}, {selectedLocation.city}
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="mt-0.5 truncate text-sm font-semibold text-gray-900">
+                  <p className="mt-0.5 truncate text-sm font-bold text-gray-900">
                     Current Location
                   </p>
-                  <p className="truncate text-xs text-gray-400">
+                  <p className="truncate text-xs text-gray-500">
                     Select your address to see nearby stores
                   </p>
                 </>
@@ -57,12 +58,12 @@ export function LocationSection() {
 
             <ChevronDown
               size={18}
-              className="shrink-0 text-gray-400"
+              className="shrink-0 text-paper-400"
               aria-hidden="true"
             />
           </button>
 
-          <span className="hidden h-10 w-px bg-gray-100 sm:block" aria-hidden="true" />
+          <span className="hidden h-10 w-px bg-paper-200 sm:block" aria-hidden="true" />
 
           {selectedLocation ? (
             <Button
