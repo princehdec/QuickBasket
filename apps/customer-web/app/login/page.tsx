@@ -31,35 +31,35 @@ export default function LoginPage() {
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200" />
+            <div className="w-full border-t border-paper-300" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-[#F8F9FA] px-3 text-gray-400">or</span>
+            <span className="bg-background px-3 font-semibold tracking-[0.12em] text-paper-500">or</span>
           </div>
         </div>
 
         <button
           type="button"
-          className="flex h-12 w-full items-center justify-center gap-3 rounded-button border border-gray-200 bg-white text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+          className="flex h-12 w-full items-center justify-center gap-3 rounded-button border border-paper-300 bg-surface text-sm font-bold text-gray-800 transition-all hover:border-paper-400 hover:bg-paper-50 active:scale-[0.99]"
         >
           <Globe size={18} />
           Continue with Google
         </button>
 
-        <p className="text-center text-xs text-gray-400">
+        <p className="text-center text-xs text-gray-500">
           By continuing, you agree to our{" "}
-          <Link href="#" className="font-medium text-brand-600 hover:underline">
+          <Link href="#" className="font-bold text-brand-700 hover:underline">
             Terms
           </Link>{" "}
           and{" "}
-          <Link href="#" className="font-medium text-brand-600 hover:underline">
+          <Link href="#" className="font-bold text-brand-700 hover:underline">
             Privacy Policy
           </Link>
         </p>
 
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-gray-600">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-semibold text-brand-600 hover:underline">
+          <Link href="/signup" className="font-bold text-brand-700 hover:underline">
             Sign up
           </Link>
         </p>

@@ -7,10 +7,10 @@ export default function ForgotPasswordPage() {
   return (
     <AuthLayout title="Forgot Password" subtitle="We'll help you reset your password">
       <div className="flex flex-col items-center gap-4 py-8 text-center">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-turmeric-100 text-turmeric-700">
           <Construction size={28} aria-hidden="true" />
         </span>
-        <p className="text-sm leading-relaxed text-gray-500">
+        <p className="text-sm leading-relaxed text-gray-600">
           Password reset is coming soon. Stay tuned!
         </p>
         <Link href="/login">

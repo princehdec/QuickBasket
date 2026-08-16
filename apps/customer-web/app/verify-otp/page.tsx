@@ -57,12 +57,12 @@ function VerifyOtpForm() {
             <button
               type="button"
               onClick={handleResend}
-              className="text-sm font-semibold text-brand-600 transition-colors hover:underline"
+              className="text-sm font-bold text-brand-700 transition-colors hover:underline"
             >
               Resend OTP
             </button>
           ) : (
-            <span className="inline-flex items-center gap-1.5 text-sm text-gray-400">
+            <span className="inline-flex items-center gap-1.5 text-sm tabular-nums text-gray-500">
               <Timer size={14} aria-hidden="true" />
               Resend in {timer}s
             </span>
@@ -71,7 +71,7 @@ function VerifyOtpForm() {
 
         <Link
           href="/login"
-          className="inline-flex items-center justify-center gap-1.5 text-sm text-gray-500 transition-colors hover:text-gray-700"
+          className="inline-flex items-center justify-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-gray-800"
         >
           <ArrowLeft size={14} aria-hidden="true" />
           Back to login

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
+import { cn } from "../../../lib/utils";
 
 type OtpInputProps = {
   length?: number;
@@ -65,7 +66,11 @@ export function OtpInput({ length = 6, value, onChange }: OtpInputProps) {
           onChange={(e) => handleChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
           autoFocus={index === 0}
-          className="h-12 w-11 rounded-button border border-gray-200 bg-white text-center text-lg font-semibold text-gray-900 transition focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100"
+          className={cn(
+            "h-12 w-11 rounded-button border bg-surface text-center font-display text-lg font-bold tabular-nums text-gray-900 transition-all duration-150",
+            "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200 focus:-translate-y-0.5",
+            value[index] ? "border-brand-300 bg-brand-50" : "border-paper-300"
+          )}
         />
       ))}
     </div>
