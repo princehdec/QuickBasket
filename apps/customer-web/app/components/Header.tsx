@@ -55,6 +55,12 @@ export function Header() {
             >
               <Search size={20} aria-hidden="true" />
             </Link>
+            <Link
+              href="/khata"
+              className="inline-flex h-10 items-center rounded-button px-3 font-display text-sm font-bold text-khata-700 transition-colors hover:bg-khata-50"
+            >
+              Khata
+            </Link>
             <ButtonLink href="/login" variant="primary" size="md">
               Login
             </ButtonLink>

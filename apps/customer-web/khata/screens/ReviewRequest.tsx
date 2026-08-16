@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Calendar, Phone } from "lucide-react";
 import { KhataRequest } from "@quickbasket/types";
-import { KhataLedgerItem } from "../components/KhataLedgerItem";
-import { Button, Card, Input } from "@quickbasket/ui";
-import { LucideArrowLeft, LucideCalendar, LucidePhone, LucideUser } from "lucide-react";
+import { KhataHeader, InitialTile, khataInputClass } from "../ui";
 
 const mockRequest: KhataRequest = {
   id: "req1",
@@ -67,88 +66,86 @@ export function ReviewRequest({ onBack }: ReviewRequestProps) {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-100">
-      <div className="sticky top-0 bg-white z-10 py-4 px-4 border-b border-neutral-200">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={onBack ?? (() => window.history.back())}>
-            <LucideArrowLeft className="w-5 h-5" />
-          </Button>
-          <h1 className="text-xl font-bold text-neutral-900">Review Khata Request</h1>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background">
+      <KhataHeader
+        title="Review Khata Request"
+        onBack={onBack ?? (() => window.history.back())}
+      />
 
-      <div className="px-4 py-4 space-y-4">
-        <Card className="p-4">
+      <div className="max-w-lg space-y-4 px-4 py-4">
+        <div className="rounded-card border border-paper-200/70 bg-surface p-4 shadow-soft sm:p-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-light rounded-full flex items-center justify-center">
-              <LucideUser className="w-5 h-5 text-primary" />
-            </div>
+            <InitialTile name={mockRequest.customerName} className="h-12 w-12 text-lg" />
             <div>
-              <h3 className="font-medium text-neutral-900">{mockRequest.customerName}</h3>
-              <p className="text-sm text-neutral-600">{mockRequest.customerPhone}</p>
+              <h3 className="font-display text-base font-bold text-gray-900">
+                {mockRequest.customerName}
+              </h3>
+              <p className="text-sm tabular-nums text-gray-600">{mockRequest.customerPhone}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-4 text-sm">
-            <div className="flex items-center gap-2">
-              <LucidePhone className="w-4 h-4 text-neutral-600" />
-              <span className="text-neutral-900">{mockRequest.customerPhone}</span>
+          <div className="mt-4 grid grid-cols-2 gap-4 text-sm tabular-nums">
+            <div className="flex items-center gap-2 text-gray-700">
+              <Phone size={14} className="shrink-0 text-paper-500" aria-hidden="true" />
+              <span>{mockRequest.customerPhone}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <LucideCalendar className="w-4 h-4 text-neutral-600" />
-              <span className="text-neutral-900">
-                Requested on {new Date(mockRequest.requestedAt).toLocaleDateString()}
-              </span>
+            <div className="flex items-center gap-2 text-gray-700">
+              <Calendar size={14} className="shrink-0 text-paper-500" aria-hidden="true" />
+              <span>Requested on {new Date(mockRequest.requestedAt).toLocaleDateString()}</span>
             </div>
           </div>
 
-          <div className="mt-4">
-            <h4 className="text-sm font-medium text-neutral-900 mb-2">Recent Activity</h4>
-            <div className="space-y-3">
+          <div className="mt-5">
+            <h4 className="font-display text-sm font-bold text-gray-900">Recent Activity</h4>
+            <div className="ruled-paper mt-2 space-y-3 rounded-xl border border-paper-200/70 p-3">
               {mockRecentActivity.map((entry) => (
                 <div key={entry.id} className="flex items-center justify-between text-sm">
                   <div>
-                    <p className="text-neutral-900">{entry.description}</p>
-                    <p className="text-xs text-neutral-600">
+                    <p className="font-medium text-gray-900">{entry.description}</p>
+                    <p className="text-xs tabular-nums text-gray-500">
                       {new Date(entry.date).toLocaleDateString()}
                     </p>
                   </div>
-                  <span className="font-medium">₹{entry.amount.toFixed(2)}</span>
+                  <span className="font-display font-bold tabular-nums text-gray-900">
+                    ₹{entry.amount.toFixed(2)}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-neutral-100">
-            <label className="text-sm font-medium text-neutral-900 mb-2 block">
+          <div className="mt-5 border-t border-paper-200/70 pt-4">
+            <label htmlFor="review-note" className="mb-2 block font-display text-sm font-bold text-gray-900">
               Add a note (optional)
             </label>
-            <Input
+            <textarea
+              id="review-note"
               placeholder="e.g., Known customer, good credit history"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="min-h-[80px] align-top"
+              className={`${khataInputClass} min-h-[80px] resize-none py-3`}
             />
           </div>
 
-          <div className="flex gap-4 mt-6">
-            <Button
-              variant="outline"
-              className="flex-1"
+          <div className="mt-6 flex gap-3">
+            <button
+              type="button"
+              className="flex h-12 flex-1 items-center justify-center rounded-button border border-khata-200 bg-khata-50 font-display text-sm font-bold text-khata-700 transition-all duration-200 hover:border-khata-300 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60"
               onClick={handleReject}
               disabled={isApproving || isRejecting}
             >
               {isRejecting ? "Rejecting..." : "Reject"}
-            </Button>
-            <Button
-              className="flex-1"
+            </button>
+            <button
+              type="button"
+              className="flex h-12 flex-1 items-center justify-center rounded-button bg-brand-600 font-display text-sm font-bold text-paper-50 shadow-[0_3px_12px_-3px_rgb(18_50_30/0.5)] transition-all duration-200 hover:bg-brand-700 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60"
               onClick={handleApprove}
               disabled={isApproving || isRejecting}
             >
               {isApproving ? "Approving..." : "Approve"}
-            </Button>
+            </button>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

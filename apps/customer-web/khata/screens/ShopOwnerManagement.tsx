@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { KhataRequest, KhataEntry, LinkedShop } from "@quickbasket/types";
 import { KhataLedgerItem } from "../components/KhataLedgerItem";
-import { Button, Card, Input } from "@quickbasket/ui";
-import { LucideArrowLeft, LucideSearch, LucideStore, LucideUser, LucideUserCheck, LucideUserPlus, LucideUsers } from "lucide-react";
+import { KhataHeader, KhataTabs, InitialTile } from "../ui";
+import { cn } from "@quickbasket/ui";
+import { Search, UserPlus, Users } from "lucide-react";
 
 const mockRequests: KhataRequest[] = [
   {
@@ -122,155 +123,155 @@ export function ShopOwnerManagement({
   );
 
   return (
-    <div className="min-h-screen bg-neutral-100">
-      <div className="sticky top-0 bg-white z-10 py-4 px-4 border-b border-neutral-200">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => window.history.back()}>
-            <LucideArrowLeft className="w-5 h-5" />
-          </Button>
-          <h1 className="text-xl font-bold text-neutral-900">Khata Management</h1>
+    <div className="min-h-screen bg-background">
+      <KhataHeader title="Khata Management" onBack={() => window.history.back()}>
+        <div className="mt-4">
+          <KhataTabs
+            tabs={[
+              { id: "requests", label: "Requests" },
+              { id: "customers", label: "Customers" },
+              { id: "activity", label: "Activity" },
+            ]}
+            active={activeTab}
+            onChange={(id) => setActiveTab(id as typeof activeTab)}
+          />
         </div>
-
-        <div className="flex gap-4 mt-6">
-          <button
-            onClick={() => setActiveTab("requests")}
-            className={`flex-1 py-2 text-sm font-medium ${activeTab === "requests" ? "text-primary border-b-2 border-primary" : "text-neutral-600"}`}
-          >
-            Requests
-          </button>
-          <button
-            onClick={() => setActiveTab("customers")}
-            className={`flex-1 py-2 text-sm font-medium ${activeTab === "customers" ? "text-primary border-b-2 border-primary" : "text-neutral-600"}`}
-          >
-            Customers
-          </button>
-          <button
-            onClick={() => setActiveTab("activity")}
-            className={`flex-1 py-2 text-sm font-medium ${activeTab === "activity" ? "text-primary border-b-2 border-primary" : "text-neutral-600"}`}
-          >
-            Activity
-          </button>
-        </div>
-      </div>
+      </KhataHeader>
 
       <div className="px-4 py-4">
         <div className="relative mb-4">
-          <LucideSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600 w-4 h-4" />
-          <Input
-            placeholder={activeTab === "requests" ? "Search requests..." :
-                        activeTab === "customers" ? "Search customers..." : "Search activity..."}
-            className="pl-10"
+          <Search
+            size={16}
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-paper-400"
+            aria-hidden="true"
+          />
+          <input
+            type="text"
+            placeholder={
+              activeTab === "requests"
+                ? "Search requests..."
+                : activeTab === "customers"
+                ? "Search customers..."
+                : "Search activity..."
+            }
+            className="h-11 w-full rounded-full border border-paper-300 bg-paper-50 pl-10 pr-3.5 text-sm text-gray-900 placeholder:text-paper-400 transition-colors focus:border-khata-400 focus:bg-surface focus:outline-none focus:ring-2 focus:ring-khata-100"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         {activeTab === "requests" && (
-          <div className="space-y-4">
+          <div className="stagger space-y-3">
             {filteredRequests.length > 0 ? (
               filteredRequests.map((request) => (
-                <Card
+                <div
                   key={request.id}
-                  className={`p-4 ${request.status === "pending" && onReviewRequest ? "cursor-pointer" : ""}`}
                   onClick={request.status === "pending" ? onReviewRequest : undefined}
+                  className={cn(
+                    "flex items-center gap-3 rounded-card border border-paper-200/70 bg-surface p-4 shadow-soft transition-all",
+                    request.status === "pending" && onReviewRequest
+                      ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-lift"
+                      : ""
+                  )}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <LucideUser className="w-5 h-5 text-primary" />
-                        <h3 className="font-medium text-neutral-900">{request.customerName}</h3>
-                      </div>
-                      <p className="text-sm text-neutral-600 mt-1">{request.customerPhone}</p>
-                      <p className="text-xs text-neutral-500 mt-1">
-                        Requested on {new Date(request.requestedAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      {request.status === "pending" ? (
-                        <>
-                          <Button variant="outline" size="sm">Reject</Button>
-                          <Button size="sm">Approve</Button>
-                        </>
-                      ) : (
-                        <span className="text-sm font-medium text-success">
-                          {request.status === "approved" ? "Approved" : "Rejected"}
-                        </span>
-                      )}
-                    </div>
+                  <InitialTile name={request.customerName} />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-display text-sm font-bold text-gray-900">
+                      {request.customerName}
+                    </h3>
+                    <p className="mt-0.5 text-sm tabular-nums text-gray-600">{request.customerPhone}</p>
+                    <p className="mt-0.5 text-xs text-gray-500">
+                      Requested on {new Date(request.requestedAt).toLocaleDateString()}
+                    </p>
                   </div>
-                </Card>
+                  {request.status === "pending" ? (
+                    <span className="shrink-0 rounded-full bg-turmeric-100 px-3 py-1 text-xs font-bold text-turmeric-700">
+                      Review
+                    </span>
+                  ) : (
+                    <span className="shrink-0 text-sm font-bold text-brand-700">
+                      {request.status === "approved" ? "Approved" : "Rejected"}
+                    </span>
+                  )}
+                </div>
               ))
             ) : (
-              <div className="text-center py-8 text-neutral-600">
-                <LucideUserPlus className="w-12 h-12 mx-auto mb-2 text-neutral-400" />
-                <p className="text-sm">No khata requests found</p>
+              <div className="flex flex-col items-center gap-3 rounded-card border border-dashed border-paper-300 py-12 text-center">
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-paper-100 text-paper-500">
+                  <UserPlus size={24} aria-hidden="true" />
+                </span>
+                <p className="text-sm text-gray-600">No khata requests found</p>
               </div>
             )}
           </div>
         )}
 
         {activeTab === "customers" && (
-          <div className="space-y-4">
+          <div className="stagger space-y-3">
             {filteredCustomers.length > 0 ? (
               filteredCustomers.map((customer) => (
-                <Card key={customer.id} className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <LucideUserCheck className="w-5 h-5 text-primary" />
-                        <h3 className="font-medium text-neutral-900">{customer.name}</h3>
-                      </div>
-                      <p className="text-sm text-neutral-600 mt-1">{customer.phoneNumber}</p>
-                      <p className="text-sm mt-1">
-                        {customer.khataBalance > 0 ? (
-                          <span className="text-error">₹{customer.khataBalance.toFixed(2)} due</span>
-                        ) : (
-                          <span className="text-success">No balance</span>
-                        )}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          onViewCustomer?.({
-                            id: customer.id,
-                            name: customer.name,
-                            phone: customer.phoneNumber,
-                            balance: customer.khataBalance,
-                          })
-                        }
-                      >
-                        View
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() =>
-                          onLogPurchase?.({
-                            id: customer.id,
-                            name: customer.name,
-                            phone: customer.phoneNumber,
-                          })
-                        }
-                      >
-                        Log Purchase
-                      </Button>
-                    </div>
+                <div
+                  key={customer.id}
+                  className="flex items-center gap-3 rounded-card border border-paper-200/70 bg-surface p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift"
+                >
+                  <InitialTile name={customer.name} />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-display text-sm font-bold text-gray-900">
+                      {customer.name}
+                    </h3>
+                    <p className="mt-0.5 text-sm tabular-nums text-gray-600">{customer.phoneNumber}</p>
+                    <p className="mt-0.5 text-sm font-semibold tabular-nums">
+                      {customer.khataBalance > 0 ? (
+                        <span className="text-khata-600">₹{customer.khataBalance.toFixed(2)} due</span>
+                      ) : (
+                        <span className="text-brand-700">No balance</span>
+                      )}
+                    </p>
                   </div>
-                </Card>
+                  <div className="flex shrink-0 flex-col gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onViewCustomer?.({
+                          id: customer.id,
+                          name: customer.name,
+                          phone: customer.phoneNumber,
+                          balance: customer.khataBalance,
+                        })
+                      }
+                      className="flex h-8 items-center rounded-button border border-paper-300 px-3 font-display text-xs font-bold text-gray-800 transition-colors hover:border-paper-400 hover:bg-paper-50"
+                    >
+                      View
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onLogPurchase?.({
+                          id: customer.id,
+                          name: customer.name,
+                          phone: customer.phoneNumber,
+                        })
+                      }
+                      className="flex h-8 items-center rounded-button bg-khata-600 px-3 font-display text-xs font-bold text-khata-50 shadow-[0_2px_8px_-2px_rgb(115_38_29/0.45)] transition-all duration-150 hover:bg-khata-700 active:scale-95"
+                    >
+                      Log Purchase
+                    </button>
+                  </div>
+                </div>
               ))
             ) : (
-              <div className="text-center py-8 text-neutral-600">
-                <LucideUsers className="w-12 h-12 mx-auto mb-2 text-neutral-400" />
-                <p className="text-sm">No customers found</p>
+              <div className="flex flex-col items-center gap-3 rounded-card border border-dashed border-paper-300 py-12 text-center">
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-paper-100 text-paper-500">
+                  <Users size={24} aria-hidden="true" />
+                </span>
+                <p className="text-sm text-gray-600">No customers found</p>
               </div>
             )}
           </div>
         )}
 
         {activeTab === "activity" && (
-          <div className="space-y-4">
+          <div className="stagger overflow-hidden rounded-card border border-paper-200/70 bg-surface shadow-soft">
             {mockRecentActivity.map((entry) => (
               <KhataLedgerItem
                 key={entry.id}

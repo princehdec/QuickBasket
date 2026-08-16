@@ -4,8 +4,9 @@ import { useState } from "react";
 import { KhataSummary, LinkedShop } from "@quickbasket/types";
 import { KhataSummaryCard } from "../components/KhataSummaryCard";
 import { KhataLedgerItem } from "../components/KhataLedgerItem";
-import { Button, Card, Input } from "@quickbasket/ui";
-import { LucideSearch, LucideStore, LucideUserPlus } from "lucide-react";
+import { KhataTabs, InitialTile } from "../ui";
+import { cn } from "@quickbasket/ui";
+import { Search, Store, UserPlus } from "lucide-react";
 
 const mockSummary: KhataSummary = {
   totalBalance: 1250.75,
@@ -84,87 +85,106 @@ export function KhataHome({ onLinkShop, onViewShop, onViewCustomer }: KhataHomeP
   );
 
   return (
-    <div className="min-h-screen bg-neutral-100">
-      <div className="sticky top-0 bg-white z-10 py-4 px-4 border-b border-neutral-200">
+    <div className="min-h-screen bg-background">
+      <div className="sticky top-0 z-10 border-b border-paper-200/80 bg-surface/95 px-4 py-4 shadow-soft backdrop-blur-md">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-neutral-900">QuickBasket Khata</h1>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon">
-              <LucideSearch className="w-5 h-5" />
-            </Button>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-khata-600">
+              QuickBasket
+            </p>
+            <h1 className="font-display text-xl font-bold tracking-tight text-gray-900">Khata</h1>
           </div>
         </div>
 
         <KhataSummaryCard summary={mockSummary} className="mt-4" />
 
-        <div className="flex gap-4 mt-6">
-          <button
-            onClick={() => setActiveTab("activity")}
-            className={`flex-1 py-2 text-sm font-medium ${activeTab === "activity" ? "text-primary border-b-2 border-primary" : "text-neutral-600"}`}
-          >
-            Activity
-          </button>
-          <button
-            onClick={() => setActiveTab("shops")}
-            className={`flex-1 py-2 text-sm font-medium ${activeTab === "shops" ? "text-primary border-b-2 border-primary" : "text-neutral-600"}`}
-          >
-            Shops
-          </button>
+        <div className="mt-5">
+          <KhataTabs
+            tabs={[
+              { id: "activity", label: "Activity" },
+              { id: "shops", label: "Shops" },
+            ]}
+            active={activeTab}
+            onChange={(id) => setActiveTab(id as "activity" | "shops")}
+          />
         </div>
       </div>
 
       <div className="px-4 py-4">
         {activeTab === "activity" ? (
-          <div className="space-y-4">
+          <div className="stagger overflow-hidden rounded-card border border-paper-200/70 bg-surface shadow-soft">
             {mockSummary.recentActivity.map((entry) => (
               <KhataLedgerItem key={entry.id} entry={entry} />
             ))}
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="relative">
-              <LucideSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600 w-4 h-4" />
-              <Input
+              <Search
+                size={16}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-paper-400"
+                aria-hidden="true"
+              />
+              <input
+                type="text"
                 placeholder="Search shops..."
-                className="pl-10"
+                className="h-11 w-full rounded-full border border-paper-300 bg-paper-50 pl-10 pr-3.5 text-sm text-gray-900 placeholder:text-paper-400 transition-colors focus:border-khata-400 focus:bg-surface focus:outline-none focus:ring-2 focus:ring-khata-100"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
             {filteredShops.map((shop) => (
-              <Card key={shop.id} className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <LucideStore className="w-5 h-5 text-primary" />
-                      <h3 className="font-medium text-neutral-900">{shop.name}</h3>
-                    </div>
-                    <p className="text-sm text-neutral-600 mt-1">
-                      {shop.khataBalance > 0 ? `₹${shop.khataBalance.toFixed(2)} due` : "No balance"}
-                    </p>
+              <div
+                key={shop.id}
+                className="flex items-center gap-3 rounded-card border border-paper-200/70 bg-surface p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift"
+              >
+                <InitialTile name={shop.name} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <Store size={15} className="shrink-0 text-khata-600" aria-hidden="true" />
+                    <h3 className="truncate font-display text-sm font-bold text-gray-900">{shop.name}</h3>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={onViewCustomer}>
-                      View
-                    </Button>
-                    {shop.khataBalance > 0 && (
-                      <Button size="sm">Pay</Button>
-                    )}
-                  </div>
+                  <p className={cn(
+                    "mt-1 text-sm font-semibold tabular-nums",
+                    shop.khataBalance > 0 ? "text-khata-600" : "text-gray-500"
+                  )}>
+                    {shop.khataBalance > 0 ? `₹${shop.khataBalance.toFixed(2)} due` : "No balance"}
+                  </p>
                 </div>
-              </Card>
+                <div className="flex shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={onViewCustomer}
+                    className="flex h-8 items-center rounded-button border border-paper-300 px-3 font-display text-xs font-bold text-gray-800 transition-colors hover:border-paper-400 hover:bg-paper-50"
+                  >
+                    View
+                  </button>
+                  {shop.khataBalance > 0 && (
+                    <button
+                      type="button"
+                      className="flex h-8 items-center rounded-button bg-khata-600 px-3 font-display text-xs font-bold text-khata-50 shadow-[0_2px_8px_-2px_rgb(115_38_29/0.45)] transition-all duration-150 hover:bg-khata-700 active:scale-95"
+                    >
+                      Pay
+                    </button>
+                  )}
+                </div>
+              </div>
             ))}
 
-            <Button className="w-full mt-4" variant="outline" onClick={onLinkShop}>
-              <LucideUserPlus className="w-4 h-4 mr-2" />
+            <button
+              type="button"
+              onClick={onLinkShop}
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-button border border-khata-300 bg-surface font-display text-sm font-bold text-khata-700 transition-colors hover:border-khata-400 hover:bg-khata-50"
+            >
+              <UserPlus size={16} aria-hidden="true" />
               Link a new shop
-            </Button>
+            </button>
 
             {onViewShop && (
               <button
                 onClick={onViewShop}
-                className="w-full text-center text-sm text-primary font-medium pt-2"
+                className="w-full pt-2 text-center text-sm font-bold text-khata-700 transition-colors hover:text-khata-800"
               >
                 Are you a shop owner? Manage your khata
               </button>
