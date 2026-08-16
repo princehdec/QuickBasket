@@ -21,17 +21,17 @@ export function QuantitySelector({
   const iconSize = size === "sm" ? 12 : 14;
 
   return (
-    <div className="inline-flex items-center gap-0 rounded-button border border-gray-200 bg-white">
+    <div className="inline-flex select-none items-center rounded-button bg-brand-600 text-paper-50 shadow-[0_2px_8px_-2px_rgb(18_50_30/0.45)]">
       <button
         type="button"
         onClick={onDecrease}
         aria-label="Decrease quantity"
-        className={`flex ${btnClass} items-center justify-center rounded-l-button text-gray-600 transition-colors hover:bg-gray-100`}
+        className={`flex ${btnClass} items-center justify-center rounded-l-button transition-colors hover:bg-brand-700 active:scale-90`}
       >
         <Minus size={iconSize} />
       </button>
       <span
-        className={`flex ${btnClass} items-center justify-center font-semibold text-gray-900 ${textClass}`}
+        className={`flex min-w-6 items-center justify-center font-display font-bold tabular-nums text-paper-50 ${textClass}`}
       >
         {quantity}
       </span>
@@ -39,7 +39,7 @@ export function QuantitySelector({
         type="button"
         onClick={onIncrease}
         aria-label="Increase quantity"
-        className={`flex ${btnClass} items-center justify-center rounded-r-button text-gray-600 transition-colors hover:bg-gray-100`}
+        className={`flex ${btnClass} items-center justify-center rounded-r-button transition-colors hover:bg-brand-700 active:scale-90`}
       >
         <Plus size={iconSize} />
       </button>
