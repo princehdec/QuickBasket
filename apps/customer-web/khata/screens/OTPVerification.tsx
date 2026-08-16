@@ -50,7 +50,7 @@ export function OTPVerification({ phone, onVerify, onResend, onBack }: OTPVerifi
           </div>
           <h1 className="font-display text-2xl font-bold tracking-tight text-gray-900">Verify OTP</h1>
           <p className="mt-2 text-sm leading-relaxed text-gray-600">
-            We've sent a 6-digit code to +91 {phone}
+            We&apos;ve sent a 6-digit code to +91 {phone}
           </p>
         </div>
 

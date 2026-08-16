@@ -22,13 +22,18 @@
 
 ## Color (brand-level — see `DESIGN_SYSTEM.md` for full UI token list)
 
-- **Primary:** Orange (`#FF6B1A` as current working value) — the color people should associate with QuickBasket at a glance.
-- Supporting neutrals and semantic colors (success/error/warning) as defined in `DESIGN_SYSTEM.md`.
+- **Primary:** Deep bottle green (`#236837` for CTAs, `#2F8144` for accents) on warm paper (`#FBF9F3`) — fresh produce, trust, and money. This is the colour people should associate with QuickBasket at a glance.
+- **Turmeric** (`#DC9A2B` lane) is reserved for offers and promotions; **khata red** (`#8E2F23` lane) is reserved for the credit ledger. Don't blend the lanes.
+- Supporting neutrals and semantic colours as defined in `DESIGN_SYSTEM.md` ("Kirana Modern").
 
 ## Logo
 
-- Not yet designed. Placeholder: wordmark "QuickBasket" in the brand orange, using the primary typeface from `DESIGN_SYSTEM.md`, until a proper mark is commissioned.
+- Not yet formally commissioned. Current placeholder: the Lucide `ShoppingBasket` mark in a green gradient tile (rounded 14px, subtle white inner ring) beside the wordmark **QuickBasket** set in Baloo 2 ExtraBold, with "Basket" in brand green.
 - When a logo exists, document usage rules here: clear space, minimum size, do's/don'ts (no recoloring, no stretching, no placing on low-contrast backgrounds).
+
+## Typography
+
+- Display face: **Baloo 2** (headings, buttons, prices). Body face: **Mukta**. Both from Ek Type and both Devanagari-capable — chosen so Hindi never needs a fallback font.
 
 ## Icon Style
 

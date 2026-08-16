@@ -5,6 +5,44 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 
 ## [Unreleased]
 
+### Changed
+- **Full visual redesign — "Kirana Modern"**: every screen restyled around warm
+  paper surfaces, a deep bottle-green primary, turmeric reserved for offers, and
+  khata red reserved for the credit ledger. Typography switched from Geist to
+  Baloo 2 (display) + Mukta (body), both Devanagari-capable. Receipt-style bill
+  summaries, ruled-paper khata ledgers, warm-tinted grays and shadows, staggered
+  section entrances, and unified buttons/cards/empty states. No behaviour,
+  links, or copy changed.
+- Khata redesigned in the same language with its own "red book" identity and
+  mounted at `/khata` with a header link (previously unreachable dead code).
+- Fixed pre-existing breakage in the khata module (missing `date-fns`,
+  non-existent `Select` import, wrong import paths in `packages/ui`) so the app
+  type-checks and builds again.
+
+### Added
+- Shared UI primitives: `PageHeader`, `EmptyState`, `VegMark`, plus Badge
+  variants (`offer`, `khata`, `success`) and Button variants (`accent`, `khata`).
+- `docs/DESIGN_SYSTEM.md` rewritten as the Kirana Modern spec (ADR-008).
+
+### Added
+- **Khata Module**: Neighborhood credit ledger feature with 10 screens:
+  - Phone entry and OTP verification
+  - Khata home (overview, activity, shops)
+  - Link shop / request khata
+  - Customer khata details (customer view)
+  - Shop owner khata management
+  - Review request (merchant view)
+  - Customer khata detail (merchant view)
+  - Log purchase and log repayment (merchant view)
+- Khata-related types added to `@quickbasket/types`:
+  - `KhataEntry`, `LinkedShop`, `KhataRequest`, `KhataSummary`, `LogPurchaseInput`, `LogRepaymentInput`
+- Khata-specific UI components: `KhataLedgerItem`, `KhataSummaryCard`
+- Shared foundation packages:
+  - `@quickbasket/types`: TypeScript types for User, Store, Product, Category, Cart, Order, Address, Payment
+  - `@quickbasket/config`: Environment variable schema, constants, API base URLs, feature flags
+  - `@quickbasket/ui`: UI primitives for auth screens (Button, Input, Card, Layout) with orange brand theme
+- Workspace dependencies wired into `apps/customer-web`
+
 ### Planned
 - Production homepage (service grid, rotating offers banner, categories, nearby stores)
 - Authentication (signup/login)

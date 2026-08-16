@@ -30,7 +30,7 @@ export function LinkShop({ onRequestKhata, onBack }: LinkShopProps) {
           </div>
           <h1 className="font-display text-2xl font-bold tracking-tight text-gray-900">Link a Shop</h1>
           <p className="mt-2 text-sm leading-relaxed text-gray-600">
-            Enter the shop's phone number to request khata access
+            Enter the shop&apos;s phone number to request khata access
           </p>
         </div>
 
@@ -79,7 +79,7 @@ export function LinkShop({ onRequestKhata, onBack }: LinkShopProps) {
           <div className="mt-3 space-y-2 text-sm text-gray-600">
             <div className="flex items-start gap-2">
               <span className="font-display font-bold text-khata-600">1.</span>
-              <span>Enter the shop's phone number</span>
+              <span>Enter the shop&apos;s phone number</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="font-display font-bold text-khata-600">2.</span>

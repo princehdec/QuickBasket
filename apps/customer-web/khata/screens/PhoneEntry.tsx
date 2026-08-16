@@ -64,7 +64,7 @@ export function PhoneEntry({ onNext }: PhoneEntryProps) {
         </form>
 
         <p className="mt-6 text-center text-xs leading-relaxed text-gray-500">
-          By continuing, you agree to QuickBasket's Terms of Service and Privacy Policy
+          By continuing, you agree to QuickBasket&apos;s Terms of Service and Privacy Policy
         </p>
       </div>
     </div>
