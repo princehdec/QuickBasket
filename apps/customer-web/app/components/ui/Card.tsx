@@ -1,6 +1,14 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../../lib/utils";
 
+/* ------------------------------------------------------------------ *
+ * Card — Kirana Modern
+ * ------------------------------------------------------------------ *
+ * Warm paper-white surface, hairline border, soft ink-tinted shadow.
+ * Elevation (not borders) communicates hierarchy, so hover lifts
+ * rather than darkens.
+ * ------------------------------------------------------------------ */
+
 export function Card({
   className,
   ...props
@@ -8,7 +16,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "bg-white rounded-card border border-gray-100/80 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200",
+        "bg-surface rounded-card border border-paper-200/70 shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lift",
         className
       )}
       {...props}
@@ -24,7 +32,7 @@ export function CardImage({
   return (
     <div
       className={cn(
-        "relative h-36 w-full bg-gradient-to-br from-brand-50 via-brand-100 to-amber-50 overflow-hidden",
+        "relative h-36 w-full overflow-hidden rounded-t-card bg-gradient-to-br from-brand-50 via-brand-100 to-turmeric-50",
         className
       )}
       {...props}

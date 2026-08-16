@@ -1,51 +1,170 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------ *
+ * QuickBasket — "Kirana Modern" design language
+ *
+ * Warm paper surfaces, deep bottle green for the brand, turmeric
+ * reserved for offers, and khata red reserved for the credit ledger.
+ * All grays are warm-tinted (no cool grays anywhere) and every shadow
+ * carries the ink hue so light comes from one direction.
+ * ------------------------------------------------------------------ */
+
 @theme {
-  --color-background: #f8f9fa;
-  --color-foreground: #171717;
-  --color-brand-50: #fff5ed;
-  --color-brand-100: #ffe7d1;
-  --color-brand-200: #ffcaa3;
-  --color-brand-300: #ffa766;
-  --color-brand-400: #ff8a33;
-  --color-brand-500: #ff6b00;
-  --color-brand-600: #e85f00;
-  --color-brand-700: #c14a00;
-  --color-brand-800: #9a3a00;
-  --color-brand-900: #7c3000;
+  /* Surfaces & ink — warm paper family */
+  --color-background: #fbf9f3;
+  --color-foreground: #1e2620;
+  --color-surface: #fffdf7;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper-50: #fbf9f3;
+  --color-paper-100: #f4f0e6;
+  --color-paper-200: #eae3d2;
+  --color-paper-300: #dbd1ba;
+  --color-paper-400: #b7ab8f;
+  --color-paper-500: #978b6f;
+  --color-paper-600: #7a6f57;
+  --color-paper-700: #5d5442;
+  --color-paper-800: #3f3a2e;
+  --color-paper-900: #2b2a22;
 
-  --radius-xs: 0.375rem;
-  --radius-sm: 0.625rem;
-  --radius-card: 0.75rem;
-  --radius-button: 0.625rem;
+  /* Warm-gray ramp — overrides Tailwind's cool grays app-wide */
+  --color-gray-50: #faf8f1;
+  --color-gray-100: #f3efe4;
+  --color-gray-200: #e7e0ce;
+  --color-gray-300: #d6ccb4;
+  --color-gray-400: #b4a98d;
+  --color-gray-500: #93896e;
+  --color-gray-600: #756c56;
+  --color-gray-700: #5a5344;
+  --color-gray-800: #3d3830;
+  --color-gray-900: #292d26;
+  --color-gray-950: #1e2620;
 
+  /* Warm neutrals for the khata module's shadcn-style names */
+  --color-neutral-100: #f3efe4;
+  --color-neutral-200: #e7e0ce;
+  --color-neutral-400: #b4a98d;
+  --color-neutral-500: #93896e;
+  --color-neutral-600: #756c56;
+  --color-neutral-900: #292d26;
+
+  /* Brand green — fresh produce, trust, money */
+  --color-brand-50: #edf5ee;
+  --color-brand-100: #d8ebda;
+  --color-brand-200: #b2d6b7;
+  --color-brand-300: #85bc8d;
+  --color-brand-400: #579e64;
+  --color-brand-500: #2f8144;
+  --color-brand-600: #236837;
+  --color-brand-700: #1c522d;
+  --color-brand-800: #164024;
+  --color-brand-900: #12321e;
+
+  /* Turmeric — offers & promotions only */
+  --color-turmeric-50: #fbf3e0;
+  --color-turmeric-100: #f6e6bf;
+  --color-turmeric-200: #eecf80;
+  --color-turmeric-300: #e4b34e;
+  --color-turmeric-400: #dc9a2b;
+  --color-turmeric-500: #c97f1a;
+  --color-turmeric-600: #a86612;
+  --color-turmeric-700: #86500e;
+
+  /* Khata red — the bahi-khata cloth ledger, credit context only */
+  --color-khata-50: #faece9;
+  --color-khata-100: #f4d7d1;
+  --color-khata-200: #e7aea3;
+  --color-khata-300: #d67f6f;
+  --color-khata-400: #c25543;
+  --color-khata-500: #a83a2c;
+  --color-khata-600: #8e2f23;
+  --color-khata-700: #73261d;
+
+  /* Status */
+  --color-success: #2f8144;
+  --color-error: #a83a2c;
+  --color-warning: #c97f1a;
+  --color-info: #41678a;
+
+  /* Bridge tokens — let @quickbasket/ui's shadcn-style class names
+     resolve against this theme instead of its dead v3 config */
+  --color-primary: #236837;
+  --color-primary-light: #d8ebda;
+  --color-primary-dark: #1c522d;
+
+  /* Typography — Ek Type pair, both Devanagari-capable */
+  --font-sans: var(--font-mukta), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-baloo), var(--font-mukta), ui-sans-serif,
+    system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
+    monospace;
+
+  /* Radius — containers rounder than their contents */
+  --radius-xs: 0.375rem; /* 6px — badges, inner chips */
+  --radius-sm: 0.625rem; /* 10px — inputs, small controls */
+  --radius-button: 0.75rem; /* 12px */
+  --radius-card: 1rem; /* 16px */
+  --radius-sheet: 1.25rem; /* 20px — sheets, modals */
+
+  /* Shadows — warm ink, one light source, tinted */
+  --shadow-soft: 0 1px 2px rgb(30 38 32 / 0.04),
+    0 4px 16px -6px rgb(30 38 32 / 0.1);
+  --shadow-lift: 0 2px 4px rgb(30 38 32 / 0.05),
+    0 12px 24px -10px rgb(28 82 45 / 0.25);
+  --shadow-sheet: 0 -8px 32px rgb(30 38 32 / 0.18);
+  --shadow-bar: 0 -4px 16px rgb(30 38 32 / 0.08);
+
+  /* Motion */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
   --animate-fade-in: fade-in 0.5s ease-out forwards;
   --animate-slide-up: slide-up 0.5s ease-out forwards;
+  --animate-pop: pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
 
   @keyframes fade-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes slide-up {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes shimmer {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
   }
 }
 
 :root {
-  --background: #f8f9fa;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #fbf9f3;
+  --foreground: #1e2620;
 }
 
 html {
@@ -56,16 +175,107 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", Roboto,
-    sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html  { scroll-behavior: auto; }
+/* Paper grain — barely-there texture so flat surfaces feel like paper */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
-  *, *::before, *::after {
+::selection {
+  background: var(--color-brand-200);
+  color: var(--color-brand-900);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* ---- Kirana Modern utilities ---- */
+
+/* Soft green glow at the top of a page — used on home & section heroes */
+.hero-wash {
+  background: radial-gradient(
+      1100px 420px at 50% -80px,
+      var(--color-brand-100),
+      transparent 70%
+    ),
+    var(--color-background);
+}
+
+/* Ruled ledger paper — the khata ledger background */
+.ruled-paper {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    rgb(115 108 86 / 0.14) 31px,
+    rgb(115 108 86 / 0.14) 32px
+  );
+}
+
+/* Dashed rule for receipt-style bill blocks */
+.dashed-rule {
+  border-top: 2px dashed var(--color-paper-300);
+}
+
+/* Staggered entrance — children cascade in */
+.stagger > * {
+  animation: slide-up 0.45s ease-out both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 45ms; }
+.stagger > *:nth-child(3) { animation-delay: 90ms; }
+.stagger > *:nth-child(4) { animation-delay: 135ms; }
+.stagger > *:nth-child(5) { animation-delay: 180ms; }
+.stagger > *:nth-child(6) { animation-delay: 225ms; }
+.stagger > *:nth-child(7) { animation-delay: 270ms; }
+.stagger > *:nth-child(8) { animation-delay: 315ms; }
+.stagger > *:nth-child(n + 9) { animation-delay: 360ms; }
+
+/* Shimmering skeleton block */
+.skeleton {
+  background: linear-gradient(
+    100deg,
+    var(--color-paper-100) 40%,
+    var(--color-paper-50) 50%,
+    var(--color-paper-100) 60%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* Hide horizontal scrollbars on horizontal-scroll rails (visual only) */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -73,7 +283,9 @@ body {
 }
 
 @supports (-webkit-overflow-scrolling: touch) {
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     font-size: 16px;
   }
 }

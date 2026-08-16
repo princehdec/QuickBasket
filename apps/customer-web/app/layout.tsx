@@ -1,19 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Baloo_2, Mukta } from "next/font/google";
 import "./globals.css";
 import { LocationProvider } from "./context/LocationContext";
 import { CartProvider } from "./contexts/CartContext";
 import { SearchProvider } from "./contexts/SearchContext";
 import { FloatingCart } from "./components/cart/FloatingCart";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+/* Ek Type pair — both render Devanagari, so Hindi copy works without
+   another font swap when i18n lands. */
+const baloo = Baloo_2({
+  variable: "--font-baloo",
+  subsets: ["latin", "devanagari"],
+  weight: ["600", "700", "800"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const mukta = Mukta({
+  variable: "--font-mukta",
+  subsets: ["latin", "devanagari"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -32,7 +36,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FF6B00",
+  themeColor: "#236837",
   width: "device-width",
   initialScale: 1,
 };
@@ -45,9 +49,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${baloo.variable} ${mukta.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-[#F8F9FA] text-gray-900">
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         <LocationProvider>
           <CartProvider>
             <SearchProvider>

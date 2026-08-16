@@ -3,27 +3,41 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "../../../lib/utils";
 
 /* ------------------------------------------------------------------ *
- * Button / ButtonLink
+ * Button / ButtonLink — Kirana Modern
  * ------------------------------------------------------------------ *
- * Clean, premium button system mapped to the QuickBasket brand.
- * Variants: primary | secondary | tertiary | ghost | outline
- * Uses :active scale-down for tactile feel (Lighthouse-friendly).
+ * Deep-green primary with a warm shadow, tactile press, visible focus
+ * ring. Variant lanes mirror the colour system:
+ *   primary  — brand green ( commerce actions )
+ *   accent   — turmeric    ( offers & promo CTAs only )
+ *   khata    — ledger red  ( khata credit actions only )
  * ------------------------------------------------------------------ */
 
-type Variant = "primary" | "secondary" | "tertiary" | "ghost" | "outline";
+type Variant =
+  | "primary"
+  | "secondary"
+  | "tertiary"
+  | "ghost"
+  | "outline"
+  | "accent"
+  | "khata";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 font-semibold rounded-button transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none select-none";
+  "inline-flex items-center justify-center gap-2 font-display font-bold tracking-tight rounded-button transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none select-none";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-brand-500 hover:bg-brand-600 text-white shadow-sm shadow-brand-500/20",
-  secondary: "bg-gray-100 hover:bg-gray-200 text-gray-800",
-  tertiary: "bg-white hover:bg-gray-50 text-gray-700 border border-gray-200",
-  ghost: "bg-transparent hover:bg-gray-100 text-gray-700",
+    "bg-brand-600 text-paper-50 shadow-[0_2px_10px_-2px_rgb(18_50_30/0.45)] hover:bg-brand-700 hover:shadow-[0_4px_14px_-4px_rgb(18_50_30/0.5)]",
+  secondary: "bg-brand-100 text-brand-800 hover:bg-brand-200",
+  tertiary:
+    "bg-surface text-gray-800 border border-paper-300 hover:border-paper-400 hover:bg-paper-50",
+  ghost: "bg-transparent text-gray-700 hover:bg-paper-200/60",
   outline:
-    "bg-white border border-brand-200 text-brand-700 hover:bg-brand-50 hover:border-brand-300",
+    "bg-surface border border-brand-300 text-brand-700 hover:bg-brand-50 hover:border-brand-400",
+  accent:
+    "bg-turmeric-400 text-[#33230a] shadow-[0_2px_10px_-3px_rgb(134_80_14/0.5)] hover:bg-turmeric-500 hover:text-[#2c1e07]",
+  khata:
+    "bg-khata-600 text-khata-50 shadow-[0_2px_10px_-2px_rgb(115_38_29/0.45)] hover:bg-khata-700",
 };
 
 const sizes: Record<Size, string> = {

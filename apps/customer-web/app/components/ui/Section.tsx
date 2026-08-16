@@ -2,6 +2,13 @@ import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
+/* ------------------------------------------------------------------ *
+ * Section / Container / headings — Kirana Modern
+ * ------------------------------------------------------------------ *
+ * Display headings use the Baloo display face with tightened tracking;
+ * vertical rhythm breathes a little more at the bottom than the top.
+ * ------------------------------------------------------------------ */
+
 export function Container({
   className,
   children,
@@ -28,7 +35,11 @@ export function Section({
   className?: string;
   children: ReactNode;
 }) {
-  return <section className={cn("py-6 sm:py-10 lg:py-12", className)}>{children}</section>;
+  return (
+    <section className={cn("py-8 sm:py-12 lg:py-14", className)}>
+      {children}
+    </section>
+  );
 }
 
 export function SectionHeading({
@@ -40,7 +51,7 @@ export function SectionHeading({
 }) {
   return (
     <div className="mb-6 flex items-end justify-between gap-3 sm:mb-8">
-      <h2 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+      <h2 className="font-display text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
         {title}
       </h2>
       {action}
@@ -52,9 +63,13 @@ export function ViewAllLink({
   label = "View All",
 }: { label?: string } & AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
-    <span className="group inline-flex cursor-pointer items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors">
+    <span className="group inline-flex cursor-pointer items-center gap-1 text-sm font-bold text-brand-600 transition-colors hover:text-brand-700">
       {label}
-      <ChevronRight size={14} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+      <ChevronRight
+        size={14}
+        className="transition-transform group-hover:translate-x-0.5"
+        aria-hidden="true"
+      />
     </span>
   );
 }

@@ -2,23 +2,29 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../../lib/utils";
 
 /* ------------------------------------------------------------------ *
- * Badge
+ * Badge — Kirana Modern
  * ------------------------------------------------------------------ *
- * Inline status pill with 3 semantic styles:
- *   default — neutral grey    (Coming Soon, etc.)
- *   accent  — brand orange    (Popular, Fastest, etc.)
- *   muted   — light grey ring  (subtle labels)
+ * Small price-tag style label. Pill-shaped for counts & statuses;
+ * colour lanes follow the system:
+ *   default — warm neutral   ( Coming Soon, etc. )
+ *   accent  — brand green    ( Popular, Fastest, etc. )
+ *   offer   — turmeric       ( discounts, promo tags )
+ *   khata   — ledger red     ( khata credit states )
+ *   muted   — hairline ring  ( subtle labels )
  * ------------------------------------------------------------------ */
 
 type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
   children: ReactNode;
-  variant?: "default" | "accent" | "muted";
+  variant?: "default" | "accent" | "muted" | "offer" | "khata" | "success";
 };
 
 const variantStyles: Record<NonNullable<BadgeProps["variant"]>, string> = {
-  default: "bg-gray-100 text-gray-600",
-  accent:  "bg-brand-500 text-white shadow-sm shadow-brand-500/20",
-  muted:   "bg-gray-100/80 text-gray-500 border border-gray-200/60",
+  default: "bg-paper-100 text-gray-700",
+  accent: "bg-brand-600 text-paper-50 shadow-[0_1px_6px_-1px_rgb(18_50_30/0.4)]",
+  offer: "bg-turmeric-100 text-turmeric-700",
+  khata: "bg-khata-100 text-khata-700",
+  success: "bg-brand-100 text-brand-800",
+  muted: "bg-surface/80 text-gray-600 border border-paper-300/60",
 };
 
 export function Badge({
@@ -30,13 +36,11 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold",
         variantStyles[variant],
         className
       )}
       {...props}
-    >
-      {children}
-    </span>
+    />
   );
 }
