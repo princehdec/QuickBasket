@@ -46,14 +46,14 @@ export function SearchBar({
   };
 
   return (
-    <div className="sticky top-0 z-30 border-b border-gray-100 bg-white shadow-sm">
+    <div className="sticky top-0 z-30 border-b border-paper-200/80 bg-surface/90 backdrop-blur-md shadow-soft">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
         {onBack && (
           <button
             type="button"
             onClick={onBack}
             aria-label="Go back"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-gray-100"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-paper-200/70"
           >
             <ArrowLeft size={20} />
           </button>
@@ -62,7 +62,7 @@ export function SearchBar({
         <div className="relative flex-1">
           <Search
             size={18}
-            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-paper-400"
             aria-hidden="true"
           />
           <input
@@ -72,14 +72,14 @@ export function SearchBar({
             onChange={(e) => handleChange(e.target.value)}
             placeholder="Search for groceries, stores..."
             aria-label="Search"
-            className="h-11 w-full rounded-button border border-gray-200 bg-gray-50 pl-10 pr-10 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100"
+            className="h-11 w-full rounded-full border border-paper-300 bg-paper-50 pl-10 pr-10 text-sm text-gray-900 placeholder:text-paper-400 transition-colors focus:border-brand-400 focus:bg-surface focus:outline-none focus:ring-2 focus:ring-brand-100"
           />
           {local && (
             <button
               type="button"
               onClick={handleClear}
               aria-label="Clear search"
-              className="absolute right-2.5 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
+              className="absolute right-2.5 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full p-1 text-paper-400 transition-colors hover:bg-paper-200 hover:text-gray-600"
             >
               <X size={16} />
             </button>

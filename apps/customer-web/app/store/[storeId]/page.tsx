@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Construction, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Construction } from "lucide-react";
 import { stores } from "../../../lib/mock/stores";
 import { products } from "../../../lib/mock/products";
 import { categories } from "../../../lib/mock/categories";
@@ -12,6 +12,7 @@ import { StoreInfoBar } from "../../components/store/StoreInfoBar";
 import { CategoryTabs } from "../../components/store/CategoryTabs";
 import { ProductGrid } from "../../components/store/ProductGrid";
 import { Button } from "../../components/ui/Button";
+import { EmptyState } from "../../components/ui/EmptyState";
 
 export default function StorePage() {
   const { storeId } = useParams<{ storeId: string }>();
@@ -61,26 +62,26 @@ export default function StorePage() {
 
   if (!store) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#F8F9FA] px-4 text-center">
-        <span className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 text-gray-400">
-          <Construction size={36} />
-        </span>
-        <h1 className="text-2xl font-bold text-gray-900">Store not found</h1>
-        <p className="text-sm text-gray-500">
-          The store you&apos;re looking for doesn&apos;t exist or may have been removed.
-        </p>
-        <Link href="/stores">
-          <Button variant="outline" size="md">
-            <ArrowLeft size={16} />
-            Browse Stores
-          </Button>
-        </Link>
+      <div className="hero-wash flex min-h-screen flex-col items-center justify-center px-4">
+        <EmptyState
+          icon={Construction}
+          title="Store not found"
+          description="The store you're looking for doesn't exist or may have been removed."
+          action={
+            <Link href="/stores">
+              <Button variant="outline" size="md">
+                <ArrowLeft size={16} />
+                Browse Stores
+              </Button>
+            </Link>
+          }
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA]">
+    <div className="min-h-screen bg-background">
       <StoreInfoBar store={store} search={search} onSearchChange={setSearch} />
       <StoreHeader store={store} />
       <CategoryTabs

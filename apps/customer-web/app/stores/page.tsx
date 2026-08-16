@@ -43,10 +43,10 @@ export default function StoresPage() {
   }, [search, filter]);
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA]">
+    <div className="hero-wash min-h-screen">
       <Section className="pb-0">
         <Container>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-gray-900">
             Nearby Grocery Stores
           </h1>
           <div className="mt-5 space-y-4">
@@ -57,7 +57,7 @@ export default function StoresPage() {
       </Section>
       <Section>
         <Container>
-          <p className="mb-4 text-sm text-gray-500">
+          <p className="mb-4 text-sm text-gray-600">
             {filteredStores.length}{" "}
             {filteredStores.length === 1 ? "store" : "stores"} found
           </p>

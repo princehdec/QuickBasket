@@ -15,11 +15,11 @@ export function RecentSearches({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-900">Recent Searches</h3>
+        <h3 className="font-display text-sm font-bold text-gray-900">Recent Searches</h3>
         <button
           type="button"
           onClick={clearRecentSearches}
-          className="text-xs font-medium text-gray-500 transition-colors hover:text-red-500"
+          className="text-xs font-bold text-gray-500 transition-colors hover:text-error"
         >
           Clear All
         </button>
@@ -28,14 +28,14 @@ export function RecentSearches({
         {recentSearches.map((term) => (
           <span
             key={term}
-            className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-200"
+            className="inline-flex items-center gap-1.5 rounded-full bg-paper-100 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-paper-200"
           >
             <button
               type="button"
               onClick={() => onSelect(term)}
               className="flex items-center gap-1.5"
             >
-              <Clock size={13} className="text-gray-400" />
+              <Clock size={13} className="text-paper-500" />
               {term}
             </button>
             <button
@@ -45,7 +45,7 @@ export function RecentSearches({
                 removeRecentSearch(term);
               }}
               aria-label={`Remove ${term} from recent searches`}
-              className="ml-0.5 rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-300 hover:text-gray-600"
+              className="ml-0.5 rounded-full p-0.5 text-paper-500 transition-colors hover:bg-paper-300 hover:text-gray-700"
             >
               <X size={12} />
             </button>

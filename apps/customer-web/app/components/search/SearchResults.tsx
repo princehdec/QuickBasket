@@ -74,7 +74,7 @@ export function SearchResults({
       {activeTab !== "stores" && matchedProducts.length > 0 && (
         <section>
           {activeTab === "all" && (
-            <h3 className="mb-3 text-sm font-semibold text-gray-900">
+            <h3 className="mb-3 font-display text-sm font-bold text-gray-900">
               Products ({matchedProducts.length})
             </h3>
           )}
@@ -89,7 +89,7 @@ export function SearchResults({
       {activeTab !== "products" && matchedStores.length > 0 && (
         <section>
           {activeTab === "all" && (
-            <h3 className="mb-3 text-sm font-semibold text-gray-900">
+            <h3 className="mb-3 font-display text-sm font-bold text-gray-900">
               Stores ({matchedStores.length})
             </h3>
           )}

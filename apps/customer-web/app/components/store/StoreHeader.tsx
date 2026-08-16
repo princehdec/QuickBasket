@@ -17,7 +17,7 @@ export function StoreHeader({ store }: { store: Store }) {
             aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
             className={`flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-md transition-colors ${
               favorited
-                ? "bg-red-500 text-white"
+                ? "bg-khata-500 text-white"
                 : "bg-white/20 text-white hover:bg-white/30"
             }`}
           >
@@ -36,32 +36,32 @@ export function StoreHeader({ store }: { store: Store }) {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="relative -mt-10 mb-6 flex items-end gap-4">
           <div
-            className={`flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${store.logoGradient} shadow-lg ring-4 ring-white`}
+            className={`flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${store.logoGradient} shadow-lift ring-4 ring-surface`}
             aria-hidden="true"
           >
             <ShoppingBag size={32} className="text-white" />
           </div>
           <div className="flex-1 pb-1">
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-gray-900">{store.name}</h1>
+              <h1 className="font-display text-xl font-bold tracking-tight text-gray-900">{store.name}</h1>
               <span
-                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
                   store.isOpen
-                    ? "bg-green-50 text-green-700"
-                    : "bg-gray-100 text-gray-500"
+                    ? "bg-brand-100 text-brand-800"
+                    : "bg-paper-100 text-gray-600"
                 }`}
               >
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${
-                    store.isOpen ? "bg-green-500" : "bg-gray-400"
+                    store.isOpen ? "bg-brand-500" : "bg-paper-400"
                   }`}
                 />
                 {store.isOpen ? "Open" : "Closed"}
               </span>
             </div>
-            <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
+            <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm tabular-nums text-gray-600">
               <span className="inline-flex items-center gap-1">
-                <Star size={14} className="fill-brand-500 text-brand-500" />
+                <Star size={14} className="fill-turmeric-400 text-turmeric-400" />
                 {store.rating}
               </span>
               <span className="inline-flex items-center gap-1">
@@ -73,7 +73,7 @@ export function StoreHeader({ store }: { store: Store }) {
                 {store.distance}
               </span>
             </div>
-            <div className="mt-1 text-xs text-gray-400">
+            <div className="mt-1 text-xs tabular-nums text-gray-500">
               Min {store.minOrder} &middot;{" "}
               {store.deliveryFee === "Free" ? "Free delivery" : `${store.deliveryFee} delivery`}
             </div>

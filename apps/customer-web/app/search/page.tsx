@@ -56,7 +56,7 @@ function SearchContent() {
   const hasQuery = searchTerm.trim().length > 0;
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA]">
+    <div className="min-h-screen bg-background">
       <SearchBar
         value={searchTerm}
         onChange={handleSearchChange}
@@ -87,7 +87,7 @@ function SearchContent() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F8F9FA]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
       <SearchContent />
     </Suspense>
   );

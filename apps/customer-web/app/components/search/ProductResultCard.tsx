@@ -6,6 +6,7 @@ import { cn } from "../../../lib/utils";
 import type { Product } from "../../../lib/mock/products";
 import { useCart } from "../../contexts/CartContext";
 import { QuantitySelector } from "../cart/QuantitySelector";
+import { VegMark } from "../ui/VegMark";
 
 export function ProductResultCard({ product }: { product: Product }) {
   const { items, addItem, increaseQuantity, decreaseQuantity } = useCart();
@@ -13,20 +14,16 @@ export function ProductResultCard({ product }: { product: Product }) {
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
 
   return (
-    <div className="flex items-center gap-4 rounded-card border border-gray-100 bg-white p-3 shadow-sm transition-all hover:shadow-md">
+    <div className="flex items-center gap-4 rounded-card border border-paper-200/70 bg-surface p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
       <Link
         href={`/store/${product.storeId}`}
         className={cn(
-          "flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br",
+          "flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br",
           product.image
         )}
         aria-hidden="true"
       >
-        {product.isVeg && (
-          <span className="flex h-4 w-4 items-center justify-center rounded-sm border border-green-600 bg-white">
-            <span className="h-2 w-2 rounded-full bg-green-600" />
-          </span>
-        )}
+        {product.isVeg && <VegMark size="sm" />}
       </Link>
 
       <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
@@ -34,9 +31,9 @@ export function ProductResultCard({ product }: { product: Product }) {
           <h4 className="truncate text-sm font-semibold text-gray-900">
             {product.name}
           </h4>
-          <p className="mt-0.5 text-xs text-gray-400">{product.unit}</p>
-          <div className="mt-1 flex items-center gap-1.5">
-            <span className="text-sm font-bold text-gray-900">₹{product.price}</span>
+          <p className="mt-0.5 text-xs text-gray-500">{product.unit}</p>
+          <div className="mt-1 flex items-baseline gap-1.5 tabular-nums">
+            <span className="font-display text-sm font-bold text-gray-900">₹{product.price}</span>
             {hasDiscount && (
               <span className="text-xs text-gray-400 line-through">₹{product.originalPrice}</span>
             )}
@@ -55,7 +52,7 @@ export function ProductResultCard({ product }: { product: Product }) {
             type="button"
             onClick={() => addItem(product)}
             aria-label={`Add ${product.name} to cart`}
-            className="flex h-8 shrink-0 items-center gap-1 rounded-button bg-brand-50 px-3 text-sm font-semibold text-brand-600 transition-colors hover:bg-brand-500 hover:text-white"
+            className="flex h-8 shrink-0 items-center gap-1 rounded-button bg-brand-100 px-3 font-display text-sm font-bold text-brand-800 transition-all duration-150 hover:bg-brand-600 hover:text-paper-50 active:scale-[0.97]"
           >
             <Plus size={14} />
             Add

@@ -10,8 +10,8 @@ export function PopularSearches({
 }) {
   return (
     <div>
-      <h3 className="flex items-center gap-1.5 text-sm font-semibold text-gray-900">
-        <TrendingUp size={15} className="text-brand-500" />
+      <h3 className="flex items-center gap-1.5 font-display text-sm font-bold text-gray-900">
+        <TrendingUp size={15} className="text-brand-600" />
         Popular Searches
       </h3>
       <div className="mt-3 flex flex-wrap gap-2">
@@ -20,7 +20,7 @@ export function PopularSearches({
             key={term}
             type="button"
             onClick={() => onSelect(term)}
-            className="rounded-full border border-gray-200 px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
+            className="rounded-full border border-paper-300 bg-surface px-3.5 py-1.5 text-sm text-gray-700 transition-all duration-150 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-800 active:scale-95"
           >
             {term}
           </button>

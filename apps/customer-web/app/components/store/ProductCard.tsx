@@ -6,6 +6,7 @@ import { cn } from "../../../lib/utils";
 import type { Product } from "../../../lib/mock/products";
 import { useCart } from "../../contexts/CartContext";
 import { QuantitySelector } from "../cart/QuantitySelector";
+import { VegMark } from "../ui/VegMark";
 
 export function ProductCard({ product }: { product: Product }) {
   const { items, addItem, increaseQuantity, decreaseQuantity } = useCart();
@@ -18,12 +19,12 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div
       className={cn(
-        "group relative rounded-card border border-gray-100 bg-white p-3 shadow-sm transition-all hover:shadow-md hover:border-gray-200",
-        product.isBestseller && "ring-1 ring-amber-200"
+        "group relative rounded-card border border-paper-200/70 bg-surface p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift",
+        product.isBestseller && "ring-1 ring-turmeric-300"
       )}
     >
       {product.isBestseller && (
-        <span className="pointer-events-none absolute left-2 top-2 z-10 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-semibold text-white">
+        <span className="pointer-events-none absolute left-2 top-2 z-10 rounded-full bg-turmeric-400 px-2 py-0.5 text-[10px] font-bold text-[#33230a]">
           Bestseller
         </span>
       )}
@@ -31,31 +32,26 @@ export function ProductCard({ product }: { product: Product }) {
       <Link href={`/product/${product.id}`}>
         <div
           className={cn(
-            "relative mb-3 flex h-24 items-center justify-center rounded-lg bg-gradient-to-br",
+            "relative mb-3 flex h-24 items-center justify-center rounded-xl bg-gradient-to-br",
             product.image
           )}
         >
           {hasDiscount && (
-            <span className="pointer-events-none absolute right-1 top-1 rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">
+            <span className="pointer-events-none absolute right-1 top-1 rounded-full bg-turmeric-500 px-2 py-0.5 text-[10px] font-bold text-white">
               {discountPercent}% OFF
             </span>
           )}
           {product.isVeg && (
-            <span
-              className="pointer-events-none absolute bottom-1 left-1 flex h-4 w-4 items-center justify-center rounded-sm border border-green-600 bg-white"
-              aria-label="Vegetarian"
-            >
-              <span className="h-2 w-2 rounded-full bg-green-600" />
-            </span>
+            <VegMark size="sm" className="absolute bottom-1 left-1" />
           )}
         </div>
 
         <div>
-          <h4 className="text-sm font-semibold text-gray-900">{product.name}</h4>
-          <p className="mt-0.5 text-xs text-gray-400">{product.unit}</p>
+          <h4 className="truncate text-sm font-semibold text-gray-900">{product.name}</h4>
+          <p className="mt-0.5 text-xs text-gray-500">{product.unit}</p>
 
-          <div className="mt-2 flex items-center gap-1.5">
-            <span className="text-sm font-bold text-gray-900">₹{product.price}</span>
+          <div className="mt-2 flex items-baseline gap-1.5 tabular-nums">
+            <span className="font-display text-sm font-bold text-gray-900">₹{product.price}</span>
             {hasDiscount && (
               <span className="text-xs text-gray-400 line-through">₹{product.originalPrice}</span>
             )}
@@ -78,7 +74,7 @@ export function ProductCard({ product }: { product: Product }) {
             type="button"
             onClick={() => addItem(product)}
             aria-label={`Add ${product.name} to cart`}
-            className="flex h-8 w-full items-center justify-center gap-1 rounded-button bg-brand-50 text-sm font-semibold text-brand-600 transition-colors hover:bg-brand-500 hover:text-white"
+            className="flex h-8 w-full items-center justify-center gap-1 rounded-button bg-brand-100 font-display text-sm font-bold text-brand-800 transition-all duration-150 hover:bg-brand-600 hover:text-paper-50 active:scale-[0.97]"
           >
             <Plus size={14} />
             Add
