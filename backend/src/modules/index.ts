@@ -7,6 +7,7 @@ import { ordersRouter } from "./orders/index";
 import { usersRouter } from "./users/index";
 import serviceabilityRouter from "./serviceability/serviceability.routes";
 import deliveryRouter from "./delivery/delivery.routes";
+import deliveryAdminRouter from "./delivery/delivery.admin.routes";
 
 const router: Router = Router();
 
@@ -18,5 +19,6 @@ router.use("/orders", ordersRouter);
 router.use("/users", usersRouter);
 router.use("/serviceability", serviceabilityRouter);
 router.use("/delivery", deliveryRouter);
+router.use("/admin/delivery", deliveryAdminRouter);
 
 export default router;

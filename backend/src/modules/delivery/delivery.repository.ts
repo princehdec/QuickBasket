@@ -30,6 +30,24 @@ export class DeliveryRepository {
       .where(inArray(deliveryJobs.partnerId, [partner.id]));
   }
 
+  async listAllJobs() {
+    return db.select().from(deliveryJobs);
+  }
+
+  async assignJob(input: { orderId: string; partnerId?: string; source: "managed" | "third_party"; earnings: number }) {
+    const [job] = await db
+      .insert(deliveryJobs)
+      .values({
+        orderId: input.orderId,
+        partnerId: input.partnerId,
+        source: input.source,
+        status: input.partnerId ? "offered" : "unassigned",
+        earnings: input.earnings.toFixed(2),
+      })
+      .returning();
+    return job;
+  }
+
   async updateJob(userId: string, jobId: string, status: DeliveryJob["status"], proofOfDeliveryUrl?: string) {
     const partner = await this.findPartnerByUserId(userId);
     if (!partner) return undefined;
