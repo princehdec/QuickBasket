@@ -69,3 +69,7 @@ export type { Notification, NewNotification } from "./notifications";
 // ── OTP Challenges ──────────────────────────────────
 export { otpChallenges } from "./otpChallenges";
 export type { OtpChallenge, NewOtpChallenge } from "./otpChallenges";
+
+// ── Service Zones ───────────────────────────────────
+export { serviceZones } from "./serviceZones";
+export type { ServiceZone, NewServiceZone } from "./serviceZones";
