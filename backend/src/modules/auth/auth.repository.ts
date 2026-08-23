@@ -1,4 +1,4 @@
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { and, eq, gt, isNull, sql } from "drizzle-orm";
 import { db } from "../../shared/db/index";
 import {
   otpChallenges,
@@ -76,7 +76,7 @@ export class AuthRepository {
     await db
       .update(otpChallenges)
       .set({
-        attempts: block ? 5 : 1,
+        attempts: sql<number>`${otpChallenges.attempts} + 1`,
         isBlocked: block,
       })
       .where(eq(otpChallenges.id, id));
