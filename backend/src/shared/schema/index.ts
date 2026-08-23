@@ -73,3 +73,7 @@ export type { OtpChallenge, NewOtpChallenge } from "./otpChallenges";
 // ── Service Zones ───────────────────────────────────
 export { serviceZones } from "./serviceZones";
 export type { ServiceZone, NewServiceZone } from "./serviceZones";
+
+// ── Delivery Jobs ───────────────────────────────────
+export { deliveryJobs, deliveryJobSourceEnum, deliveryJobStatusEnum } from "./deliveryJobs";
+export type { DeliveryJob, NewDeliveryJob } from "./deliveryJobs";
