@@ -1,17 +1,21 @@
 import { z } from "zod";
 
-export const placeOrderSchema = z.object({
-  storeId: z.string().uuid(),
+export const createOrderSchema = z.object({
+  businessId: z.string().uuid(),
   addressId: z.string().uuid(),
-  paymentMethod: z.enum(["upi", "credit_card", "debit_card", "cod"]),
-  couponCode: z.string().max(50).optional(),
-  deliveryNotes: z.string().max(500).optional(),
+  paymentMethod: z.enum(["upi", "credit_card", "debit_card", "net_banking", "wallet"]),
   items: z
     .array(
       z.object({
         productId: z.string().uuid(),
-        quantity: z.number().int().positive(),
-      })
+        quantity: z.number().int().min(1).max(100),
+      }),
     )
-    .min(1, "At least one item is required"),
+    .min(1)
+    .max(100),
+  deliveryNotes: z.string().max(500).optional(),
+});
+
+export const orderIdSchema = z.object({
+  id: z.string().uuid(),
 });
