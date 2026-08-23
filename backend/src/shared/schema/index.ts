@@ -77,3 +77,7 @@ export type { ServiceZone, NewServiceZone } from "./serviceZones";
 // ── Delivery Jobs ───────────────────────────────────
 export { deliveryJobs, deliveryJobSourceEnum, deliveryJobStatusEnum } from "./deliveryJobs";
 export type { DeliveryJob, NewDeliveryJob } from "./deliveryJobs";
+
+// ── Settlements ─────────────────────────────────────
+export { settlementBatches, settlementStatusEnum } from "./settlements";
+export type { SettlementBatch, NewSettlementBatch } from "./settlements";
