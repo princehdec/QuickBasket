@@ -1,208 +1,42 @@
 "use client";
 
-import { useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Calendar,
-  Construction,
-  CreditCard,
-  MapPin,
-  MessageSquare,
-  ShoppingBag,
-  Store,
-} from "lucide-react";
-import { getOrderById } from "../../../lib/mock/orders";
-import { useCart } from "../../contexts/CartContext";
-import { OrderTimeline } from "../../components/orders/OrderTimeline";
-import { DeliveryPartnerCard } from "../../components/orders/DeliveryPartnerCard";
-import { OrderItems } from "../../components/orders/OrderItems";
-import { OrderSummary } from "../../components/orders/OrderSummary";
-import { OrderMapPlaceholder } from "../../components/orders/OrderMapPlaceholder";
-import { SupportActions } from "../../components/orders/SupportActions";
+import { ArrowLeft, Loader2, MapPin, Package, Store } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { EmptyState } from "../../components/ui/EmptyState";
+import { useLang } from "../../i18n/LanguageContext";
 
-export default function OrderDetailPage() {
-  const { orderId } = useParams<{ orderId: string }>();
-  const router = useRouter();
-  const order = getOrderById(orderId);
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 
-  const handleReorder = useCallback(() => {
-    if (!order) return;
-    router.push(`/store/${order.storeId}`);
-  }, [order, router]);
+type Order = { orderNumber: string; businessId: string; status: string; paymentMethod: string; paymentStatus: string; grandTotal: number; createdAt: string; addressId: string; items: Array<{ productName: string; productUnit: string | null; quantity: number; price: number }> };
 
-  if (!order) {
-    return (
-      <div className="hero-wash flex min-h-screen flex-col items-center justify-center px-4">
-        <EmptyState
-          icon={Construction}
-          title="Order not found"
-          description="The order you're looking for doesn't exist."
-          action={
-            <Link href="/orders">
-              <Button variant="outline">View All Orders</Button>
-            </Link>
-          }
-        />
-      </div>
-    );
-  }
+export default function OrderDetailPage({ params }: { params: Promise<{ orderId: string }> }) {
+  const { t } = useLang();
+  const [orderId, setOrderId] = useState("");
+  const [order, setOrder] = useState<Order | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 z-30 border-b border-paper-200/80 bg-surface/90 backdrop-blur-md shadow-soft">
-        <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/orders"
-            aria-label="Back to orders"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-paper-200/70"
-          >
-            <ArrowLeft size={20} />
-          </Link>
-          <h1 className="font-display text-base font-bold tracking-tight text-gray-900">Order Details</h1>
-          <span className="ml-auto text-xs font-semibold tabular-nums text-gray-500">{order.id}</span>
-        </div>
-      </div>
+  useEffect(() => {
+    params.then(({ orderId: id }) => {
+      setOrderId(id);
+      const token = window.localStorage.getItem("qb_access_token");
+      if (!token) { setLoading(false); return; }
+      fetch(`${API_BASE_URL}/api/v1/orders/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+        .then(async (response) => {
+          const payload = await response.json() as { data?: Order; message?: string };
+          if (!response.ok || !payload.data) throw new Error(payload.message ?? t("Order not found"));
+          setOrder(payload.data);
+        })
+        .catch((requestError: unknown) => setError(requestError instanceof Error ? requestError.message : t("Order not found")))
+        .finally(() => setLoading(false));
+    });
+  }, [params, t]);
 
-      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Status Banner */}
-        <div className="mb-6 rounded-card bg-gradient-to-br from-brand-500 to-brand-700 p-4 text-paper-50 shadow-lift">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-white/75">Order Status</p>
-              <p className="font-display text-lg font-extrabold tracking-tight">
-                {order.status === "active"
-                  ? "In Progress"
-                  : order.status === "completed"
-                  ? "Delivered"
-                  : "Cancelled"}
-              </p>
-            </div>
-            <ShoppingBag size={24} className="text-white/60" />
-          </div>
-        </div>
+  if (loading) return <div className="flex min-h-screen items-center justify-center bg-background"><Loader2 className="animate-spin text-brand-600" /></div>;
+  if (!order) return <div className="hero-wash flex min-h-screen flex-col items-center justify-center px-4"><EmptyState icon={Package} title={t("Order not found")} description={error || t("The order you're looking for doesn't exist.")} action={<Link href="/orders"><Button variant="outline">{t("View All Orders")}</Button></Link>} /></div>;
 
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-          {/* Left — Timeline + Partner + Map */}
-          <div className="flex-1 space-y-6">
-            <section>
-              <h2 className="font-display text-base font-bold tracking-tight text-gray-900">Order Timeline</h2>
-              <div className="mt-2 rounded-card border border-paper-200/70 bg-surface p-4 shadow-soft">
-                <OrderTimeline
-                  currentStep={
-                    order.status === "cancelled" ? "placed" : order.timelineStep
-                  }
-                />
-              </div>
-            </section>
-
-            {order.partner && (
-              <DeliveryPartnerCard partner={order.partner} />
-            )}
-
-            {order.status === "active" && <OrderMapPlaceholder />}
-          </div>
-
-          {/* Right — Info + Items + Summary */}
-          <div className="w-full shrink-0 lg:w-80">
-            <div className="space-y-4 lg:sticky lg:top-20">
-              {/* Order Info */}
-              <section>
-                <h2 className="font-display text-base font-bold tracking-tight text-gray-900">
-                  Order Information
-                </h2>
-                <div className="mt-2 space-y-2">
-                  <div className="flex items-center gap-3 rounded-card border border-paper-200/70 bg-surface p-3 shadow-soft">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
-                      <Store size={15} />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-xs text-gray-500">Store</p>
-                      <Link
-                        href={`/store/${order.storeId}`}
-                        className="text-sm font-semibold text-gray-900 transition-colors hover:text-brand-700"
-                      >
-                        {order.storeName}
-                      </Link>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 rounded-card border border-paper-200/70 bg-surface p-3 shadow-soft">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-info/10 text-info">
-                      <Calendar size={15} />
-                    </span>
-                    <div>
-                      <p className="text-xs text-gray-500">Order Date</p>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {order.orderDate}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 rounded-card border border-paper-200/70 bg-surface p-3 shadow-soft">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-turmeric-100 text-turmeric-700">
-                      <MapPin size={15} />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-xs text-gray-500">Delivery Address</p>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {order.deliveryAddress}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 rounded-card border border-paper-200/70 bg-surface p-3 shadow-soft">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-700">
-                      <CreditCard size={15} />
-                    </span>
-                    <div>
-                      <p className="text-xs text-gray-500">Payment</p>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {order.paymentMethod}
-                      </p>
-                    </div>
-                  </div>
-
-                  {order.deliveryNotes && (
-                    <div className="flex items-start gap-3 rounded-card border border-paper-200/70 bg-surface p-3 shadow-soft">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-paper-100 text-gray-600">
-                        <MessageSquare size={15} />
-                      </span>
-                      <div>
-                        <p className="text-xs text-gray-500">Delivery Notes</p>
-                        <p className="text-sm text-gray-900">
-                          {order.deliveryNotes}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
-
-              <OrderItems items={order.items} />
-              <OrderSummary order={order} />
-              <SupportActions hasPartner={!!order.partner} />
-
-              {order.status !== "cancelled" && (
-                <button
-                  type="button"
-                  onClick={handleReorder}
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-button bg-brand-600 font-display text-sm font-bold text-paper-50 shadow-[0_3px_12px_-3px_rgb(18_50_30/0.5)] transition-all duration-200 hover:bg-brand-700 active:scale-[0.99]"
-                >
-                  <ShoppingBag size={16} />
-                  Reorder from {order.storeName}
-                  <ArrowRight size={16} />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const statusLabel = order.status === "delivered" ? "Delivered" : order.status === "cancelled" ? "Cancelled" : order.status.replaceAll("_", " ");
+  return <div className="min-h-screen bg-background"><div className="sticky top-0 z-30 border-b border-paper-200/80 bg-surface/90 backdrop-blur-md shadow-soft"><div className="mx-auto flex h-14 max-w-3xl items-center gap-3 px-4"><Link href="/orders" aria-label="Back to orders" className="flex h-9 w-9 items-center justify-center rounded-full text-gray-700 hover:bg-paper-200/70"><ArrowLeft size={20} /></Link><h1 className="font-display text-base font-bold text-gray-900">{t("Order Details")}</h1><span className="ml-auto text-xs font-semibold text-gray-500">{order.orderNumber}</span></div></div><main className="mx-auto max-w-3xl space-y-5 px-4 py-6"><section className="rounded-card bg-gradient-to-br from-brand-500 to-brand-700 p-5 text-paper-50 shadow-lift"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-white/75">{t("Order Status")}</p><p className="mt-1 font-display text-xl font-extrabold capitalize">{t(statusLabel)}</p><p className="mt-2 text-sm text-white/80">{new Date(order.createdAt).toLocaleString()}</p></section><section className="rounded-card border border-paper-200/70 bg-surface p-4 shadow-soft"><h2 className="font-display text-base font-bold text-gray-900">{t("Order Information")}</h2><div className="mt-3 grid gap-3 sm:grid-cols-2"><div className="flex items-center gap-3"><Store size={18} className="text-brand-700" /><div><p className="text-xs text-gray-500">{t("Business")}</p><p className="text-sm font-semibold">{order.businessId}</p></div></div><div className="flex items-center gap-3"><MapPin size={18} className="text-info" /><div><p className="text-xs text-gray-500">{t("Address")}</p><p className="text-sm font-semibold">{order.addressId}</p></div></div></div></section><section className="rounded-card border border-paper-200/70 bg-surface p-4 shadow-soft"><h2 className="font-display text-base font-bold text-gray-900">{t("Items")}</h2><div className="mt-3 space-y-3">{order.items.map((item) => <div key={`${item.productName}-${item.quantity}`} className="flex items-center justify-between border-b border-paper-200/70 pb-3 text-sm"><div><p className="font-semibold">{item.productName}</p><p className="text-xs text-gray-500">{item.productUnit ?? ""} · ×{item.quantity}</p></div><p className="font-display font-bold">₹{(item.price * item.quantity).toFixed(2)}</p></div>)}</div><div className="mt-4 flex items-center justify-between"><span className="font-display font-bold">{t("Grand Total")}</span><span className="font-display text-xl font-bold text-brand-700">₹{order.grandTotal.toFixed(2)}</span></div></section><section className="rounded-card border border-paper-200/70 bg-surface p-4 shadow-soft"><p className="text-xs text-gray-500">{t("Payment")}</p><p className="mt-1 text-sm font-semibold capitalize">{order.paymentMethod.replaceAll("_", " ")} · {order.paymentStatus}</p></section><Link href="/orders" className="inline-flex text-sm font-bold text-brand-700">{t("Back to all orders")}</Link><span className="sr-only">{orderId}</span></main></div>;
 }
