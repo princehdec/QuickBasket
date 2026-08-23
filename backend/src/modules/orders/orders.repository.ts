@@ -125,4 +125,37 @@ export class OrdersRepository {
     const items = await db.select().from(orderItems).where(eq(orderItems.orderId, order.id));
     return { order, items };
   }
+
+  async listForBusinessOwner(ownerId: string): Promise<Array<{ order: Order; items: OrderItem[] }>> {
+    const ownerOrders = await db
+      .select({ order: orders })
+      .from(orders)
+      .innerJoin(businesses, eq(orders.businessId, businesses.id))
+      .where(eq(businesses.ownerId, ownerId))
+      .orderBy(desc(orders.createdAt));
+
+    if (ownerOrders.length === 0) return [];
+    const rows = ownerOrders.map((row) => row.order);
+    const items = await db.select().from(orderItems).where(inArray(orderItems.orderId, rows.map((order) => order.id)));
+    const itemsByOrder = new Map<string, OrderItem[]>();
+    for (const item of items) itemsByOrder.set(item.orderId, [...(itemsByOrder.get(item.orderId) ?? []), item]);
+    return rows.map((order) => ({ order, items: itemsByOrder.get(order.id) ?? [] }));
+  }
+
+  async updateStatusForBusinessOwner(orderId: string, ownerId: string, status: Order["status"]): Promise<Order | undefined> {
+    const owned = await db
+      .select({ order: orders })
+      .from(orders)
+      .innerJoin(businesses, eq(orders.businessId, businesses.id))
+      .where(and(eq(orders.id, orderId), eq(businesses.ownerId, ownerId)))
+      .limit(1);
+    if (!owned[0]) return undefined;
+
+    const [updated] = await db
+      .update(orders)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(orders.id, orderId))
+      .returning();
+    return updated;
+  }
 }

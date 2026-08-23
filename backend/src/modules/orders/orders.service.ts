@@ -122,4 +122,15 @@ export class OrdersService {
     if (!row) throw ApiError.notFound("Order not found");
     return toResponse(row.order, row.items);
   }
+
+  async listForVendor(ownerId: string): Promise<OrderResponseDTO[]> {
+    const rows = await this.repo.listForBusinessOwner(ownerId);
+    return rows.map(({ order, items }) => toResponse(order, items));
+  }
+
+  async updateForVendor(ownerId: string, orderId: string, status: "confirmed" | "preparing" | "packed" | "cancelled"): Promise<OrderResponseDTO> {
+    const updated = await this.repo.updateStatusForBusinessOwner(orderId, ownerId, status);
+    if (!updated) throw ApiError.notFound("Order not found for this vendor");
+    return toResponse(updated, []);
+  }
 }
