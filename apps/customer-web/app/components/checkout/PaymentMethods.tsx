@@ -1,8 +1,9 @@
 "use client";
 
-import { Smartphone, CreditCard, Banknote, Landmark } from "lucide-react";
+import { Smartphone, CreditCard, Landmark } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import { useCheckout, type PaymentMethod } from "../../contexts/CheckoutContext";
+import { useLang } from "../../i18n/LanguageContext";
 
 const methods: {
   id: PaymentMethod;
@@ -13,15 +14,15 @@ const methods: {
   { id: "upi", label: "UPI", description: "Google Pay, PhonePe, Paytm", icon: Smartphone },
   { id: "credit_card", label: "Credit Card", description: "Visa, Mastercard, RuPay", icon: CreditCard },
   { id: "debit_card", label: "Debit Card", description: "Visa, Mastercard, RuPay", icon: Landmark },
-  { id: "cod", label: "Cash on Delivery", description: "Pay when you receive", icon: Banknote },
 ];
 
 export function PaymentMethods() {
+  const { t } = useLang();
   const { paymentMethod, setPaymentMethod } = useCheckout();
 
   return (
     <section>
-      <h2 className="font-display text-base font-bold tracking-tight text-gray-900">Payment Method</h2>
+      <h2 className="font-display text-base font-bold tracking-tight text-gray-900">{t("Payment Method")}</h2>
       <div className="mt-2 space-y-2">
         {methods.map((m) => {
           const Icon = m.icon;
@@ -50,9 +51,9 @@ export function PaymentMethods() {
               </span>
               <div className="min-w-0 flex-1">
                 <span className="text-sm font-semibold text-gray-900">
-                  {m.label}
+                  {t(m.label)}
                 </span>
-                <p className="mt-0.5 text-xs text-gray-600">{m.description}</p>
+                <p className="mt-0.5 text-xs text-gray-600">{t(m.description)}</p>
               </div>
               <span
                 className={cn(

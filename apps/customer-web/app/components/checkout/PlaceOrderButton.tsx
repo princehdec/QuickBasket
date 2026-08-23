@@ -5,39 +5,88 @@ import { useRouter } from "next/navigation";
 import { Loader2, ShoppingBag } from "lucide-react";
 import { useCart } from "../../contexts/CartContext";
 import { useCheckout } from "../../contexts/CheckoutContext";
+import { useLang } from "../../i18n/LanguageContext";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
+
+type CreateOrderResponse = {
+  data?: {
+    orderNumber: string;
+    grandTotal: number;
+    createdAt: string;
+  };
+  message?: string;
+};
+
+function getAccessToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem("qb_access_token");
+}
 
 export function PlaceOrderButton() {
+  const { t } = useLang();
   const router = useRouter();
-  const { clearCart } = useCart();
-  const { canPlaceOrder, setLastOrder, selectedAddress, deliveryOption } = useCheckout();
+  const { items, clearCart } = useCart();
+  const { canPlaceOrder, setLastOrder, selectedAddress, paymentMethod, orderNotes } = useCheckout();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handlePlaceOrder = () => {
-    if (!canPlaceOrder) {
-      setError("Please select a delivery address and payment method.");
+  const handlePlaceOrder = async () => {
+    if (!canPlaceOrder || !selectedAddress || !paymentMethod) {
+      setError(t("Please select a delivery address and payment method."));
+      return;
+    }
+
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      setError(t("Please verify your phone number before placing an order."));
+      return;
+    }
+
+    const businessId = items[0]?.product.storeId;
+    if (!businessId || items.some((item) => item.product.storeId !== businessId)) {
+      setError(t("Please order from one store at a time."));
       return;
     }
 
     setLoading(true);
     setError("");
 
-    const orderId = `QB${Array.from({ length: 8 }, () =>
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".charAt(
-        Math.floor(Math.random() * 36)
-      )
-    ).join("")}`;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          businessId,
+          addressId: selectedAddress.id,
+          paymentMethod,
+          deliveryNotes: orderNotes || undefined,
+          items: items.map((item) => ({
+            productId: item.product.id,
+            quantity: item.quantity,
+          })),
+        }),
+      });
 
-    const estimatedDelivery =
-      deliveryOption === "asap"
-        ? "20-30 minutes"
-        : "Scheduled for selected time";
+      const payload = (await response.json()) as CreateOrderResponse;
+      if (!response.ok || !payload.data) {
+        throw new Error(payload.message ?? t("We could not place your order."));
+      }
 
-    setTimeout(() => {
-      setLastOrder({ orderId, estimatedDelivery });
+      setLastOrder({
+        orderId: payload.data.orderNumber,
+        estimatedDelivery: "Based on live serviceability",
+      });
       clearCart();
       router.push("/order/success");
-    }, 1500);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : t("We could not place your order."));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,22 +100,20 @@ export function PlaceOrderButton() {
         {loading ? (
           <>
             <Loader2 size={18} className="animate-spin" />
-            Placing Order...
+            {t("Placing Order...")}
           </>
         ) : (
           <>
             <ShoppingBag size={18} />
-            Place Order
+            {t("Pay & Place Order")}
           </>
         )}
       </button>
 
-      {error && (
-        <p className="text-center text-xs font-medium text-error">{error}</p>
-      )}
+      {error && <p className="text-center text-xs font-medium text-error">{error}</p>}
 
       <p className="text-center text-xs text-gray-500">
-        By placing this order, you agree to our Terms of Service
+        {t("Payment is online-only at launch. By placing this order, you agree to our Terms of Service")}
       </p>
     </div>
   );
