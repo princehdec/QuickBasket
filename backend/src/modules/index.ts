@@ -9,6 +9,7 @@ import serviceabilityRouter from "./serviceability/serviceability.routes";
 import deliveryRouter from "./delivery/delivery.routes";
 import deliveryAdminRouter from "./delivery/delivery.admin.routes";
 import settlementsRouter from "./settlements/settlements.routes";
+import prescriptionsRouter from "./prescriptions/prescriptions.routes";
 
 const router: Router = Router();
 
@@ -22,5 +23,6 @@ router.use("/serviceability", serviceabilityRouter);
 router.use("/delivery", deliveryRouter);
 router.use("/admin/delivery", deliveryAdminRouter);
 router.use("/settlements", settlementsRouter);
+router.use("/prescriptions", prescriptionsRouter);
 
 export default router;
