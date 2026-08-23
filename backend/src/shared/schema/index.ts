@@ -81,3 +81,7 @@ export type { DeliveryJob, NewDeliveryJob } from "./deliveryJobs";
 // ── Settlements ─────────────────────────────────────
 export { settlementBatches, settlementStatusEnum } from "./settlements";
 export type { SettlementBatch, NewSettlementBatch } from "./settlements";
+
+// ── Prescription Reviews ───────────────────────────
+export { prescriptionReviews, prescriptionReviewStatusEnum } from "./prescriptions";
+export type { PrescriptionReview, NewPrescriptionReview } from "./prescriptions";
