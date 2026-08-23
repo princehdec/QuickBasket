@@ -5,7 +5,7 @@ import { env } from "./shared/config/env";
 import { errorHandler } from "./shared/middleware/errorHandler";
 import routes from "./modules/index";
 
-const app = express();
+const app: express.Express = express();
 
 app.use(helmet());
 app.use(cors());

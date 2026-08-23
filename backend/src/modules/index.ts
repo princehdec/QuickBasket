@@ -6,7 +6,7 @@ import { cartRouter } from "./cart/index";
 import { ordersRouter } from "./orders/index";
 import { usersRouter } from "./users/index";
 
-const router = Router();
+const router: Router = Router();
 
 router.use("/auth", authRouter);
 router.use("/businesses", businessesRouter);

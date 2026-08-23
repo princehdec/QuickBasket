@@ -4,6 +4,54 @@ Every entry follows: **Context → Decision → Consequences → Status**. Newes
 
 ---
 
+## ADR-013: Launch Cities, Serviceability, and Delivery Supply
+
+**Context:** The founder selected Lucknow and Gopalganj as the first launch locations and wants both managed/in-house riders and third-party delivery partners.
+
+**Decision:** Launch initially through configurable service zones rather than the full municipal areas. Use a 5 km default delivery radius from each active business, with an admin-controlled extension up to 8 km for selected businesses when delivery time and partner availability support it. Use business-specific zones, operating hours, road-distance/serviceability checks, and partner capacity rather than relying only on straight-line distance. Support both managed/in-house partners and approved third-party delivery partners through one delivery-job interface.
+
+**Consequences:** The system must support city records, business service areas, delivery fee bands, partner source/type, assignment, reassignment, and zone pause controls. Lucknow should begin with selected neighbourhood clusters; Gopalganj should begin with the central town and nearby localities. Radius values remain configurable and are not hardcoded.
+
+**Status:** Accepted.
+
+---
+
+## ADR-012: Launch Authentication and Payments
+
+**Context:** The founder wants OTP login and does not want COD at launch.
+
+**Decision:** Phone OTP is the primary authentication method. Launch payments are online-only through a payment gateway adapter; COD is disabled by default and can only be enabled later by an explicit admin/product decision. OTP issuance and verification must be rate-limited, auditable, and never logged in plaintext. Payment success must be confirmed server-side through signed gateway verification/webhooks.
+
+**Consequences:** The current password-first backend auth flow must be migrated or made compatible with OTP sessions before launch. Customer, vendor, partner, and admin roles must use the same identity foundation with role-specific authorization.
+
+**Status:** Accepted.
+
+---
+
+## ADR-011: Vendor Settlement and Vendor Surfaces
+
+**Context:** The founder requires a one-week settlement cycle and wants vendor access on both web and mobile.
+
+**Decision:** Merchant settlement is weekly, calculated from an auditable ledger that accounts for commissions, refunds, adjustments, payment fees, and completed-order eligibility. Build both a responsive vendor web/PWA and a native vendor mobile app, backed by the same APIs and permission model.
+
+**Consequences:** The data model needs vendor ledgers, settlement batches, payout status, bank/UPI details, staff roles, and reconciliation reports. The web and mobile vendor products must not duplicate business logic.
+
+**Status:** Accepted.
+
+---
+
+## ADR-010: All Requested Commerce Categories in the Product Scope
+
+**Context:** The founder wants the launch product to support general stores, medicines, electronics, stationery, dry cleaners, bakeries, restaurants, small shops, and cloth/garment shops rather than limiting the plan to grocery only.
+
+**Decision:** The platform will use a shared commerce backbone with category-specific modules. The pilot may be operationally staged by city and merchant readiness, but the product architecture must support all named categories. Medicines must support both OTC and prescription workflows, including pharmacy verification, prescription upload, pharmacist review, decision history, and restricted-product controls.
+
+**Consequences:** The platform must not force dry-cleaning, restaurant, Porter, or prescription orders into a simple grocery-only state model. Category-specific fields and state transitions must be modeled as extensions of a shared order/event framework.
+
+**Status:** Accepted.
+
+---
+
 ## ADR-008: Adopt the "Kirana Modern" Design Language
 
 **Context:** The app shipped with a draft orange-on-gray theme that read as generic quick-commerce, and the Khata feature had a second, contradictory teal/paper spec plus an unstyled dead prototype. A full visual redesign was commissioned with creative freedom but zero functional changes.

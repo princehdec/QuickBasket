@@ -1,0 +1,21 @@
+{
+  "name": "quickbasket",
+  "version": "0.1.0",
+  "private": true,
+  "description": "QuickBasket multi-service hyperlocal delivery platform",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "backend"
+  ],
+  "scripts": {
+    "dev:customer-web": "npm run dev --workspace=apps/customer-web",
+    "build:customer-web": "npm run build --workspace=apps/customer-web",
+    "lint:customer-web": "npm run lint --workspace=apps/customer-web",
+    "build:backend": "npm run build --workspace=backend",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

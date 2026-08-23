@@ -65,3 +65,7 @@ export type { BusinessHour, NewBusinessHour } from "./businessHours";
 // ── Notifications ──────────────────────────────────
 export { notifications } from "./notifications";
 export type { Notification, NewNotification } from "./notifications";
+
+// ── OTP Challenges ──────────────────────────────────
+export { otpChallenges } from "./otpChallenges";
+export type { OtpChallenge, NewOtpChallenge } from "./otpChallenges";

@@ -1,13 +1,16 @@
-export type RegisterDTO = {
+export type OtpSendDTO = {
   phone: string;
-  fullName?: string;
-  email?: string;
-  password: string;
 };
 
-export type LoginDTO = {
+export type OtpVerifyDTO = {
   phone: string;
-  password: string;
+  otp: string;
+  challengeId?: string;
+};
+
+export type CompleteProfileDTO = {
+  fullName?: string;
+  email?: string;
 };
 
 export type RefreshDTO = {
@@ -30,6 +33,12 @@ export type AuthTokensDTO = {
 export type AuthResponseDTO = {
   user: AuthUserDTO;
   tokens: AuthTokensDTO;
+  isNewUser: boolean;
+};
+
+export type OtpSendResponseDTO = {
+  challengeId: string;
+  expiresAt: string;
 };
 
 export type UserProfileDTO = {

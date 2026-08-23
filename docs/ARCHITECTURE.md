@@ -4,13 +4,14 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                      apps/web (Next.js)                  │
-│   Customer-facing site — homepage, search, cart, orders  │
+│                 Customer Web (Next.js)                   │
+│   Homepage, search, cart, checkout, orders, account       │
 └───────────────────────────┬───────────────────────────────┘
                             │ HTTPS (REST, see API_SPEC.md)
 ┌───────────────────────────▼───────────────────────────────┐
 │                        backend/ (API)                     │
-│  Auth · Catalog · Search · Cart/Orders · Payments · Users  │
+│ Identity · Cities · Catalog · Orders · Dispatch · Payments │
+│ Settlements · Notifications · Support · Audit · Users     │
 └───────────────────────────┬───────────────────────────────┘
                             │
         ┌───────────────────┼───────────────────┐
@@ -20,15 +21,19 @@
                                             Notifications)
 ```
 
-`packages/` sits alongside both — shared TypeScript types, UI components, and config used by `apps/web` and (as more frontends appear) any future admin/vendor app.
+`packages/` sits alongside all frontends — shared TypeScript types, API clients, UI components, i18n, and config are reused by customer, partner, vendor, and admin surfaces.
 
 ## 2. Monorepo Layout
 
 ```
 quickbasket/
 ├── apps/
-│   └── web/            # Customer-facing Next.js app (Phase 1)
-│       # future: apps/admin, apps/vendor
+│   ├── customer-web/       # Customer-facing Next.js app
+│   ├── customer-mobile/    # Customer Android/iOS Expo app
+│   ├── partner-mobile/     # Delivery-partner Android/iOS Expo app
+│   ├── vendor-web/         # Vendor web/PWA
+│   ├── vendor-mobile/      # Vendor Android/iOS Expo app
+│   └── admin-web/           # Admin operations web app
 ├── backend/
 │   ├── src/
 │   │   ├── modules/
@@ -42,6 +47,8 @@ quickbasket/
 ├── packages/
 │   ├── ui/              # shared React components (design-system-driven)
 │   ├── types/           # shared TypeScript types (API contracts, DB models)
+│   ├── api-client/      # typed API client and auth/error handling
+│   ├── i18n/            # English/Hindi translations and formatting
 │   └── config/          # shared eslint/tsconfig/tailwind config
 └── docs/
 ```
@@ -54,6 +61,7 @@ quickbasket/
 - **Rendering:** server-rendered where it helps SEO/first-load speed (homepage, store/product pages); client-rendered for interactive bits (cart, checkout).
 - **i18n:** English + Hindi from day one — all user-facing strings go through the i18n layer, never hardcoded.
 - **State:** local/component state by default; a lightweight global store only for cart/session — avoid over-engineering state management before there's a reason to.
+- **Khata Module:** Neighborhood credit ledger feature with screens for phone entry, OTP verification, khata overview, shop linking, customer/merchant views, and transaction logging.
 - **Styling/UI:** consumes `packages/ui`, which implements `DESIGN_SYSTEM.md` (Orange theme, Lucide icons, rounded corners, fast animations).
 
 ## 4. Backend (`backend/`)
@@ -82,12 +90,14 @@ See `DATABASE.md` for the full schema. Key architectural point: **city scoping**
 ## 8. Payments
 
 - Integration point lives in `backend/src/modules/payments`.
-- Gateway choice is an open decision — see `notes.md` and `DECISIONS.md` once locked.
-- Webhook-driven order status updates (payment confirmed → order confirmed) happen server-side only, never trusted from the client.
+- Payment is online-only at launch. The gateway is implemented behind a swappable adapter; COD is disabled unless a later decision enables it.
+- Webhook-driven payment and order status updates happen server-side only, never trusted from the client.
+- Payment attempts and webhook event IDs are persisted for idempotency and reconciliation.
 
 ## 9. Notifications
 
-- Order status changes trigger notifications (push and/or SMS/WhatsApp — channel choice open, see `notes.md`).
+- Order status changes trigger notifications through push first, with SMS/WhatsApp as configurable fallback channels.
+- OTP delivery is a first-class notification use case and must be rate-limited.
 - Kept as a thin, swappable module so the channel can change without touching order logic.
 
 ## 10. Environments
@@ -101,6 +111,7 @@ See `DATABASE.md` for the full schema. Key architectural point: **city scoping**
 To avoid over-building ahead of real needs, these are intentionally open until Phase 1 usage tells us more:
 - Whether Food/Laundry/Porter become separate backend deployables or stay modules in the same backend.
 - Whether a dedicated search service is ever needed.
-- Delivery fleet architecture (in-house vs. partner network) — affects the `orders` module design once decided.
+- Advanced dispatch optimization and exact external delivery-provider integrations — the launch supports both managed and third-party partners behind one delivery-job interface.
+- Exact payment, OTP, maps, SMS/WhatsApp providers — adapters are required, but provider credentials and contracts remain deployment configuration.
 
 Track these in `notes.md` until they're resolved, then move the resolution here and into `DECISIONS.md`.

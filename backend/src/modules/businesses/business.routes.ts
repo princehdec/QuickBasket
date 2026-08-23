@@ -15,7 +15,7 @@ import {
   remove,
 } from "./business.controller";
 
-const router = Router();
+const router: Router = Router();
 
 router.post("/", authenticate, validate(createBusinessSchema), create);
 router.get("/", validate(storeQuerySchema, "query"), getAll);

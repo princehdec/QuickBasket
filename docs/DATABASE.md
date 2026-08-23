@@ -10,9 +10,21 @@ Naming convention: tables and columns in `snake_case`, per `PROJECT_RULES.md`.
 | Column | Type | Notes |
 |---|---|---|
 | id | PK | |
-| name | string | e.g. "Lucknow" |
-| state | string | |
+| name | string | e.g. "Lucknow" or "Gopalganj" |
+| state | string | e.g. "Uttar Pradesh" or "Bihar" |
 | is_active | boolean | can be launched/visible to users |
+| created_at | timestamp | |
+
+### `service_zones`
+| Column | Type | Notes |
+|---|---|---|
+| id | PK | |
+| city_id | FK → cities | required |
+| name | string | neighbourhood cluster or locality name |
+| radius_km | decimal | configurable default starts at 5 km; selected zones may extend up to 8 km |
+| boundary | geometry/json, nullable | optional polygon for precise serviceability |
+| delivery_fee_rules | json | distance-band and service rules |
+| is_active | boolean | admin can pause a zone |
 | created_at | timestamp | |
 
 ### `users`
@@ -87,11 +99,12 @@ Naming convention: tables and columns in `snake_case`, per `PROJECT_RULES.md`.
 |---|---|---|
 | id | PK | |
 | user_id | FK → users | |
-| store_id | FK → stores | |
+| store_id | FK → stores | canonical API name may be `business_id` if the live table remains `businesses` |
 | city_id | FK → cities | denormalized for fast city-scoped reporting |
+| service_zone_id | FK → service_zones | serviceability snapshot |
 | address_id | FK → addresses | delivery address |
-| status | enum | `placed`, `confirmed`, `out_for_delivery`, `delivered`, `cancelled` (finalize naming as a `DECISIONS.md` entry) |
-| total_amount | decimal | |
+| status | enum | shared lifecycle extended by category-specific states |
+| total_amount | decimal | server-calculated |
 | payment_id | FK → payments, nullable | |
 | created_at | timestamp | |
 
@@ -117,11 +130,18 @@ Naming convention: tables and columns in `snake_case`, per `PROJECT_RULES.md`.
 |---|---|---|
 | id | PK | |
 | order_id | FK → orders | |
-| gateway | string | e.g. "razorpay" — pending final decision |
+| gateway | string | provider behind a swappable adapter |
 | gateway_payment_id | string | |
 | amount | decimal | |
 | status | enum | `pending`, `success`, `failed`, `refunded` |
+| webhook_event_id | string, nullable | idempotency key for gateway events |
 | created_at | timestamp | |
+
+### `settlement_batches` / `ledger_entries`
+Weekly merchant settlement requires immutable ledger entries for order earnings, commission, refunds, adjustments, payment fees, and payout status. A settlement batch belongs to a business and a weekly period; each entry references the source order or adjustment and is never overwritten after payout. Partner earnings use the same ledger pattern with a partner reference.
+
+### `delivery_jobs`
+A delivery job references an order, service zone, merchant, customer address, and assigned partner. It records managed versus third-party source, assignment history, pickup/drop timestamps, delivery proof, failure reason, and reassignment events.
 
 ### `offers` / `promotions`
 | Column | Type | Notes |
