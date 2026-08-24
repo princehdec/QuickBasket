@@ -6,6 +6,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 ## [Unreleased]
 
 ### Changed
+- **OTP sender validation:** the backend now accepts both a plain verified sender email and Brevo’s standard `Display Name <email>` format, preventing valid SMTP sender configuration from failing startup validation.
 - **Privacy hardening:** disabled SQL and parameter logging in the backend so development-mode console-OTP testing does not expose phone numbers, OTP hashes, addresses, or other user data in Render logs.
 
 - **Full visual redesign — "Kirana Modern"**: every screen restyled around warm

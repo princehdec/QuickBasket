@@ -22,7 +22,19 @@ const envSchema = z.object({
     .enum(["true", "false"])
     .default("false")
     .transform((value) => value === "true"),
-  OTP_EMAIL_FROM: z.string().email().optional(),
+  OTP_EMAIL_FROM: z
+    .string()
+    .refine(
+      (value) => {
+        const trimmed = value.trim();
+        return (
+          z.string().email().safeParse(trimmed).success ||
+          /^.+\\s<[^<>@\\s]+@[^<>@\\s]+\\.[^<>@\\s]+>$/.test(trimmed)
+        );
+      },
+      { message: "Invalid email" },
+    )
+    .optional(),
   OTP_EMAIL_TO: z.string().email().optional(),
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().optional(),
