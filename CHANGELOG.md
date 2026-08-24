@@ -30,6 +30,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 - Vendor web now loads the vendor’s linked stores, live catalog, and order queue, with product stock/price/availability controls and order status actions.
 - Customer mobile now loads live city-scoped businesses and products, supports product search, city switching, and a working local add-to-cart interaction with bilingual feedback.
 - Partner mobile now uses Expo SecureStore on native platforms, supports refresh and loading feedback, and only exposes valid delivery-job status transitions.
+- Vendor mobile now uses Expo SecureStore on native platforms, supports live order refresh, guarded order progression, and settlement feedback.
 - Shared UI primitives: `PageHeader`, `EmptyState`, `VegMark`, plus Badge
 
   variants (`offer`, `khata`, `success`) and Button variants (`accent`, `khata`).
