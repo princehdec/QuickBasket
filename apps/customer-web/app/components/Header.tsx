@@ -1,9 +1,22 @@
+"use client";
+
 import Link from "next/link";
-import { Search, ShoppingBasket } from "lucide-react";
+import { Bell, Search, ShoppingBasket } from "lucide-react";
+import { useEffect, useState } from "react";
+import { listNotifications } from "../../lib/api";
 import { Container } from "./ui/Section";
 import { ButtonLink } from "./ui/Button";
+import { LanguageToggle } from "../i18n/LanguageToggle";
+import { useLang } from "../i18n/LanguageContext";
 
 export function Header() {
+  const { t } = useLang();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    listNotifications(true).then((notifications) => setUnreadCount(notifications.length)).catch(() => setUnreadCount(0));
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 border-b border-paper-200/70 bg-surface/90 backdrop-blur-md supports-[backdrop-filter]:bg-surface/75 shadow-soft">
       <Container>
@@ -30,7 +43,7 @@ export function Header() {
           <Link
             href="/search"
             className="hidden flex-1 max-w-md md:block"
-            aria-label="Search"
+            aria-label={t("Search")}
           >
             <div className="relative">
               <Search
@@ -38,10 +51,8 @@ export function Header() {
                 className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-paper-400"
                 aria-hidden="true"
               />
-              <div
-                className="flex h-10 w-full cursor-text items-center rounded-full border border-paper-200 bg-paper-50 pl-10 pr-3 text-sm text-paper-500 transition focus-within:border-brand-400 focus-within:bg-surface focus-within:outline-none focus-within:ring-4 focus-within:ring-brand-100"
-              >
-                Search for groceries, stores...
+              <div className="flex h-10 w-full cursor-text items-center rounded-full border border-paper-200 bg-paper-50 pl-10 pr-3 text-sm text-paper-500 transition focus-within:border-brand-400 focus-within:bg-surface focus-within:outline-none focus-within:ring-4 focus-within:ring-brand-100">
+                {t("Search for groceries, stores...")}
               </div>
             </div>
           </Link>
@@ -49,7 +60,7 @@ export function Header() {
           <div className="flex items-center gap-2">
             <Link
               href="/search"
-              aria-label="Search"
+              aria-label={t("Search")}
               className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full
                          text-gray-700 hover:bg-paper-200/70 transition-colors"
             >
@@ -57,12 +68,14 @@ export function Header() {
             </Link>
             <Link
               href="/khata"
-              className="inline-flex h-10 items-center rounded-button px-3 font-display text-sm font-bold text-khata-700 transition-colors hover:bg-khata-50"
+              className="inline-flex h-10 items-center rounded-button px-2 font-display text-sm font-bold text-khata-700 transition-colors hover:bg-khata-50 sm:px-3"
             >
-              Khata
+              {t("Khata")}
             </Link>
-            <ButtonLink href="/login" variant="primary" size="md">
-              Login
+            <Link href="/orders" aria-label={t("Notifications / सूचनाएँ")} className="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-paper-200/70"><Bell size={19} aria-hidden="true" />{unreadCount > 0 && <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-khata-600 px-1 text-[9px] font-bold text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>}</Link>
+            <LanguageToggle />
+            <ButtonLink href="/login" variant="primary" size="md" className="hidden sm:inline-flex">
+              {t("Login")}
             </ButtonLink>
           </div>
         </div>

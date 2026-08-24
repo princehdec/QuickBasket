@@ -303,3 +303,23 @@ export async function deleteAddress(id: string): Promise<void> {
     method: "DELETE",
   });
 }
+
+export type CustomerNotification = {
+  id: string;
+  title: string;
+  body: string | null;
+  type: string;
+  data: Record<string, unknown> | null;
+  isRead: boolean;
+  createdAt: string;
+};
+
+export function listNotifications(unreadOnly = false): Promise<CustomerNotification[]> {
+  return authenticatedRequest<CustomerNotification[]>(`/api/v1/notifications?unreadOnly=${unreadOnly}`);
+}
+
+export function markNotificationRead(id: string): Promise<CustomerNotification> {
+  return authenticatedRequest<CustomerNotification>(`/api/v1/notifications/${encodeURIComponent(id)}/read`, {
+    method: "PATCH",
+  });
+}

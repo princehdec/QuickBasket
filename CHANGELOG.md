@@ -35,7 +35,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 - Payment routes now capture the raw Razorpay webhook body, verify `x-razorpay-signature`, validate payment amounts, return correct error statuses, and apply idempotent captured/failed/refunded state transitions to payment and order records.
 - Customer mobile now includes phone-OTP send/verify controls with native SecureStore token persistence and a sign-out action; the OTP test code remains disabled by default.
 - Product APIs and vendor validation now expose and manage `requiresPrescription`; the order service rejects prescription-required items until an approved prescription-order workflow is implemented, and customer cards/detail pages and customer mobile clearly disable unsafe additions.
-- Authenticated notification APIs now list a customer’s notifications, filter unread items, and mark an owned notification as read.
+- Authenticated notification APIs now list a customer’s notifications, filter unread items, and mark an owned notification as read; customer web adds API helpers and an unread indicator in the header.
 - Admin web now has refreshable live dispatch metrics, an assignment form without fake default earnings, and one-click selection of unassigned orders.
 - Shared UI primitives: `PageHeader`, `EmptyState`, `VegMark`, plus Badge
 
