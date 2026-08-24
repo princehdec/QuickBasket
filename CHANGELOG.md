@@ -25,6 +25,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 - **Persisted delivery addresses:** authenticated address list/create/update/delete API with user ownership, default-address handling, and soft deletion; customer checkout now loads real UUID-backed addresses and lets signed-in customers add a delivery address.
 - Product catalog responses now include friendly category names and stable slugs, so live store tabs group products by their real business categories.
 - Customer product details now load live product and business data, including live stock state and same-store product rails for related and frequently bought items.
+- Customer home nearby stores and trending products now load from the live catalog and follow the selected city when available.
 - Shared UI primitives: `PageHeader`, `EmptyState`, `VegMark`, plus Badge
 
   variants (`offer`, `khata`, `success`) and Button variants (`accent`, `khata`).
