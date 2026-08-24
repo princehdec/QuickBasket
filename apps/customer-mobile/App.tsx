@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
+  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -9,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import * as SecureStore from "expo-secure-store";
 
 const API_BASE_URL = (process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://localhost:4000").replace(/\/$/, "");
 const cities = ["Lucknow", "Gopalganj"] as const;
@@ -25,6 +27,23 @@ async function apiRequest<T>(path: string): Promise<T> {
   return payload.data;
 }
 
+async function readAccessToken() {
+  if (Platform.OS === "web") return window.localStorage.getItem("qb_access_token");
+  return SecureStore.getItemAsync("qb_access_token");
+}
+
+async function saveAccessToken(value: string) {
+  if (Platform.OS === "web") window.localStorage.setItem("qb_access_token", value);
+  else await SecureStore.setItemAsync("qb_access_token", value);
+}
+
+async function authRequest<T>(path: string, body: Record<string, string>) {
+  const response = await fetch(`${API_BASE_URL}${path}`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const payload = await response.json() as ApiEnvelope<T>;
+  if (!response.ok || payload.data === undefined) throw new Error(payload.message ?? "Authentication failed / authentication विफल हुआ");
+  return payload.data;
+}
+
 export default function App() {
   const [city, setCity] = useState<City>("Lucknow");
   const [businesses, setBusinesses] = useState<Business[]>([]);
@@ -33,6 +52,15 @@ export default function App() {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
+  const [challengeId, setChallengeId] = useState<string | null>(null);
+  const [authLoading, setAuthLoading] = useState(false);
+
+  useEffect(() => {
+    readAccessToken().then((value) => setAuthToken(value)).catch(() => setAuthToken(null));
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,6 +106,50 @@ export default function App() {
     setMessage(`${product.name} added to cart / cart में जोड़ा गया`);
   };
 
+  const sendOtp = async () => {
+    setAuthLoading(true);
+    try {
+      const result = await authRequest<{ challengeId: string }>("/api/v1/auth/otp/send", { phone });
+      setChallengeId(result.challengeId);
+      setMessage("OTP sent / OTP भेजा गया");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not send OTP / OTP नहीं भेजा जा सका");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const verifyOtp = async () => {
+    if (!challengeId) return;
+    setAuthLoading(true);
+    try {
+      const result = await authRequest<{ tokens: { accessToken: string; refreshToken: string } }>("/api/v1/auth/otp/verify", { phone, otp, challengeId });
+      await saveAccessToken(result.tokens.accessToken);
+      if (Platform.OS === "web") window.localStorage.setItem("qb_refresh_token", result.tokens.refreshToken);
+      else await SecureStore.setItemAsync("qb_refresh_token", result.tokens.refreshToken);
+      setAuthToken(result.tokens.accessToken);
+      setOtp("");
+      setMessage("Signed in / sign in सफल हुआ");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not verify OTP / OTP verify नहीं हुआ");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    if (Platform.OS === "web") {
+      window.localStorage.removeItem("qb_access_token");
+      window.localStorage.removeItem("qb_refresh_token");
+    } else {
+      await SecureStore.deleteItemAsync("qb_access_token");
+      await SecureStore.deleteItemAsync("qb_refresh_token");
+    }
+    setAuthToken(null);
+    setChallengeId(null);
+    setMessage("Signed out / sign out हो गया");
+  };
+
   const renderProduct = ({ item }: { item: Product }) => (
     <View style={styles.productCard}>
       <View style={styles.productMark}><Text style={styles.productMarkText}>{item.name.slice(0, 1)}</Text></View>
@@ -100,6 +172,8 @@ export default function App() {
         <View><Text style={styles.locationLabel}>Delivering to / डिलीवरी शहर</Text><Text style={styles.locationValue}>{city}</Text></View>
         <View style={styles.citySwitch}>{cities.map((option) => <Pressable key={option} onPress={() => setCity(option)} style={[styles.cityButton, city === option && styles.cityButtonActive]}><Text style={[styles.cityButtonText, city === option && styles.cityButtonTextActive]}>{option}</Text></Pressable>)}</View>
       </View>
+
+      {authToken ? <View style={styles.authSignedIn}><Text style={styles.authSignedText}>Signed in / sign in सफल</Text><Pressable onPress={() => void signOut()}><Text style={styles.authLink}>Sign out / बाहर जाएँ</Text></Pressable></View> : <View style={styles.authCard}><Text style={styles.authTitle}>Phone sign-in / फोन से sign in</Text><TextInput value={phone} onChangeText={setPhone} placeholder="10-digit phone number" placeholderTextColor="#8A938A" style={styles.authInput} keyboardType="phone-pad" maxLength={10} /><Pressable onPress={() => void sendOtp()} disabled={authLoading || phone.length < 10} style={({ pressed }) => [styles.authButton, (authLoading || phone.length < 10) && styles.disabled, pressed && styles.pressed]}><Text style={styles.authButtonText}>{authLoading ? "Sending…" : "Send OTP / OTP भेजें"}</Text></Pressable>{challengeId ? <><TextInput value={otp} onChangeText={setOtp} placeholder="6-digit OTP" placeholderTextColor="#8A938A" style={styles.authInput} keyboardType="number-pad" maxLength={6} /><Pressable onPress={() => void verifyOtp()} disabled={authLoading || otp.length !== 6} style={({ pressed }) => [styles.authButton, (authLoading || otp.length !== 6) && styles.disabled, pressed && styles.pressed]}><Text style={styles.authButtonText}>{authLoading ? "Checking…" : "Verify OTP / OTP verify करें"}</Text></Pressable></> : null}</View>}
 
       <TextInput value={query} onChangeText={setQuery} placeholder="Search products / उत्पाद खोजें" placeholderTextColor="#8A938A" style={styles.searchInput} returnKeyType="search" />
 
@@ -133,6 +207,15 @@ const styles = StyleSheet.create({
   locationCard: { borderRadius: 16, backgroundColor: "#E8F3E9", padding: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   locationLabel: { color: "#5E6A60", fontSize: 12, fontWeight: "700" },
   locationValue: { color: "#236837", fontSize: 16, fontWeight: "800", marginTop: 4 },
+  authCard: { borderRadius: 16, backgroundColor: "#FFFDF7", borderWidth: 1, borderColor: "#E7E2D7", padding: 14, marginTop: 16 },
+  authSignedIn: { borderRadius: 16, backgroundColor: "#E8F3E9", padding: 14, marginTop: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  authTitle: { color: "#1E2620", fontSize: 14, fontWeight: "800", marginBottom: 8 },
+  authSignedText: { color: "#236837", fontSize: 13, fontWeight: "800" },
+  authLink: { color: "#236837", fontSize: 12, fontWeight: "800" },
+  authInput: { height: 44, borderRadius: 10, borderWidth: 1, borderColor: "#DCD6C8", backgroundColor: "#FFFFFF", paddingHorizontal: 12, color: "#1E2620", marginBottom: 8 },
+  authButton: { borderRadius: 10, backgroundColor: "#236837", paddingVertical: 11, alignItems: "center", marginBottom: 8 },
+  authButtonText: { color: "#FFFFFF", fontSize: 12, fontWeight: "800" },
+  disabled: { opacity: 0.5 },
   citySwitch: { flexDirection: "row", gap: 6 },
   cityButton: { borderRadius: 10, paddingHorizontal: 8, paddingVertical: 7, backgroundColor: "#D7E9D9" },
   cityButtonActive: { backgroundColor: "#236837" },
