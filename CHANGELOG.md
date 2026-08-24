@@ -27,6 +27,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 - Customer product details now load live product and business data, including live stock state and same-store product rails for related and frequently bought items.
 - Customer home nearby stores and trending products now load from the live catalog and follow the selected city when available.
 - Customer search now queries live city-scoped stores and products, including real category, brand, and description matching.
+- Vendor web now loads the vendor’s linked stores, live catalog, and order queue, with product stock/price/availability controls and order status actions.
 - Shared UI primitives: `PageHeader`, `EmptyState`, `VegMark`, plus Badge
 
   variants (`offer`, `khata`, `success`) and Button variants (`accent`, `khata`).
