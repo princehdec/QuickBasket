@@ -22,7 +22,9 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
   type-checks and builds again.
 
 ### Added
+- **Persisted delivery addresses:** authenticated address list/create/update/delete API with user ownership, default-address handling, and soft deletion; customer checkout now loads real UUID-backed addresses and lets signed-in customers add a delivery address.
 - Shared UI primitives: `PageHeader`, `EmptyState`, `VegMark`, plus Badge
+
   variants (`offer`, `khata`, `success`) and Button variants (`accent`, `khata`).
 - `docs/DESIGN_SYSTEM.md` rewritten as the Kirana Modern spec (ADR-008).
 

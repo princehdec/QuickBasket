@@ -5,8 +5,10 @@ import { CheckCircle, Clock, MapPin, Package } from "lucide-react";
 import { useCheckout } from "../../contexts/CheckoutContext";
 import { Button } from "../ui/Button";
 import { EmptyState } from "../ui/EmptyState";
+import { useLang } from "../../i18n/LanguageContext";
 
 export function OrderSuccess() {
+  const { t } = useLang();
   const { lastOrder, selectedAddress } = useCheckout();
 
   if (!lastOrder) {
@@ -14,8 +16,8 @@ export function OrderSuccess() {
       <div className="hero-wash flex min-h-screen flex-col items-center justify-center px-4">
         <EmptyState
           icon={Package}
-          title="No order found"
-          description="We couldn't find any recent order information."
+          title={t("No order found")}
+          description={t("We couldn't find any recent order information.")}
           action={
             <Link href="/stores">
               <Button>Continue Shopping</Button>
@@ -33,10 +35,10 @@ export function OrderSuccess() {
       </span>
 
       <h1 className="mt-6 font-display text-2xl font-extrabold tracking-tight text-gray-900">
-        Order Placed Successfully!
+        {t("Order Placed Successfully!")}
       </h1>
       <p className="mt-2 text-sm leading-relaxed text-gray-600">
-        Thank you for your order. We&apos;ll start preparing it right away.
+        {t("Thank you for your order. We'll start preparing it right away.")}
       </p>
 
       <div className="mt-8 space-y-3 text-left">
@@ -45,7 +47,7 @@ export function OrderSuccess() {
             <Package size={18} />
           </span>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Order ID</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t("Order ID")}</p>
             <p className="font-display text-sm font-bold tabular-nums tracking-wide text-gray-900">
               {lastOrder.orderId}
             </p>
@@ -57,7 +59,7 @@ export function OrderSuccess() {
             <Clock size={18} />
           </span>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Estimated Delivery</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t("Estimated Delivery")}</p>
             <p className="text-sm font-semibold text-gray-900">
               {lastOrder.estimatedDelivery}
             </p>
@@ -70,12 +72,12 @@ export function OrderSuccess() {
               <MapPin size={18} />
             </span>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Delivering to</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t("Delivering to")}</p>
               <p className="text-sm font-semibold text-gray-900">
                 {selectedAddress.label}
               </p>
               <p className="text-xs text-gray-600">
-                {selectedAddress.address}, {selectedAddress.city}
+                {selectedAddress.addressLine1}, {selectedAddress.city}
               </p>
             </div>
           </div>
@@ -85,11 +87,11 @@ export function OrderSuccess() {
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
         <Link href="/stores">
           <Button variant="primary" size="lg" className="w-full sm:w-auto">
-            Continue Shopping
+            {t("Continue Shopping")}
           </Button>
         </Link>
         <span className="text-sm self-center text-gray-500">
-          Track Order (coming soon)
+          {t("Track Order (coming soon)")}
         </span>
       </div>
     </div>

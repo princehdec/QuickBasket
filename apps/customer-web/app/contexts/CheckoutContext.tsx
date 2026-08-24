@@ -4,11 +4,17 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-import type { Location } from "../context/LocationContext";
+import {
+  createAddress,
+  listAddresses,
+  type CreateCustomerAddressInput,
+  type CustomerAddress,
+} from "../../lib/api";
 
 export type PaymentMethod = "upi" | "credit_card" | "debit_card" | "net_banking" | "wallet";
 export type DeliveryOption = "asap" | "scheduled";
@@ -41,37 +47,16 @@ export const validCoupons: Coupon[] = [
   },
 ];
 
-export const mockAddresses: Location[] = [
-  {
-    id: "addr-1",
-    label: "Home",
-    address: "123, Main Street, Sector 14",
-    city: "Lucknow",
-    pincode: "122001",
-  },
-  {
-    id: "addr-2",
-    label: "Work",
-    address: "456, Cyber Hub, DLF Phase 2",
-    city: "Lucknow",
-    pincode: "122002",
-  },
-  {
-    id: "addr-3",
-    label: "Other",
-    address: "789, MG Road",
-    city: "Lucknow",
-    pincode: "122003",
-  },
-];
-
 export type OrderInfo = {
   orderId: string;
   estimatedDelivery: string;
 };
 
 type CheckoutContextType = {
-  selectedAddress: Location | null;
+  addresses: CustomerAddress[];
+  selectedAddress: CustomerAddress | null;
+  addressesLoading: boolean;
+  addressesError: string;
   deliveryOption: DeliveryOption;
   scheduledDate: string;
   paymentMethod: PaymentMethod | null;
@@ -81,7 +66,9 @@ type CheckoutContextType = {
   couponApplied: boolean;
   orderNotes: string;
   lastOrder: OrderInfo | null;
-  setAddress: (address: Location) => void;
+  setAddress: (address: CustomerAddress) => void;
+  addAddress: (input: CreateCustomerAddressInput) => Promise<CustomerAddress>;
+  refreshAddresses: () => Promise<void>;
   setDeliveryOption: (option: DeliveryOption) => void;
   setScheduledDate: (date: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
@@ -94,17 +81,15 @@ type CheckoutContextType = {
 
 const CheckoutContext = createContext<CheckoutContextType | null>(null);
 
-function generateOrderId(): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let id = "QB";
-  for (let i = 0; i < 8; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return id;
+function hasAccessToken(): boolean {
+  return typeof window !== "undefined" && Boolean(window.localStorage.getItem("qb_access_token"));
 }
 
 export function CheckoutProvider({ children }: { children: ReactNode }) {
-  const [selectedAddress, setSelectedAddress] = useState<Location | null>(mockAddresses[0]);
+  const [addresses, setAddresses] = useState<CustomerAddress[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<CustomerAddress | null>(null);
+  const [addressesLoading, setAddressesLoading] = useState(true);
+  const [addressesError, setAddressesError] = useState("");
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>("asap");
   const [scheduledDate, setScheduledDate] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
@@ -115,8 +100,51 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   const [orderNotes, setOrderNotes] = useState("");
   const [lastOrder, setLastOrderState] = useState<OrderInfo | null>(null);
 
-  const setAddress = useCallback((address: Location) => {
+  const refreshAddresses = useCallback(async () => {
+    if (!hasAccessToken()) {
+      setAddresses([]);
+      setSelectedAddress(null);
+      setAddressesError("Please sign in to add a delivery address");
+      setAddressesLoading(false);
+      return;
+    }
+
+    setAddressesLoading(true);
+    setAddressesError("");
+    try {
+      const nextAddresses = await listAddresses();
+      setAddresses(nextAddresses);
+      setSelectedAddress((current) => {
+        const stillAvailable = current && nextAddresses.find((address) => address.id === current.id);
+        return stillAvailable ?? nextAddresses.find((address) => address.isDefault) ?? nextAddresses[0] ?? null;
+      });
+    } catch (error) {
+      setAddressesError(error instanceof Error ? error.message : "Unable to load delivery addresses");
+    } finally {
+      setAddressesLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshAddresses();
+  }, [refreshAddresses]);
+
+  const setAddress = useCallback((address: CustomerAddress) => {
     setSelectedAddress(address);
+  }, []);
+
+  const addAddress = useCallback(async (input: CreateCustomerAddressInput) => {
+    setAddressesError("");
+    try {
+      const created = await createAddress(input);
+      setAddresses((current) => [created, ...current.filter((address) => address.id !== created.id)]);
+      setSelectedAddress(created);
+      return created;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to save delivery address";
+      setAddressesError(message);
+      throw error;
+    }
   }, []);
 
   const applyCoupon = useCallback(
@@ -153,7 +181,10 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
+      addresses,
       selectedAddress,
+      addressesLoading,
+      addressesError,
       deliveryOption,
       scheduledDate,
       paymentMethod,
@@ -164,6 +195,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       orderNotes,
       lastOrder,
       setAddress,
+      addAddress,
+      refreshAddresses,
       setDeliveryOption,
       setScheduledDate,
       setPaymentMethod,
@@ -174,7 +207,10 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       canPlaceOrder,
     }),
     [
+      addresses,
       selectedAddress,
+      addressesLoading,
+      addressesError,
       deliveryOption,
       scheduledDate,
       paymentMethod,
@@ -185,6 +221,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       orderNotes,
       lastOrder,
       setAddress,
+      addAddress,
+      refreshAddresses,
       setDeliveryOption,
       setScheduledDate,
       setPaymentMethod,

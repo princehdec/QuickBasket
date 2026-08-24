@@ -216,3 +216,75 @@ export async function listProducts(params: {
     items: result.items.map(toCustomerProduct),
   };
 }
+
+export type CustomerAddress = {
+  id: string;
+  label: string;
+  addressLine1: string;
+  addressLine2: string | null;
+  city: string;
+  state: string | null;
+  pincode: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  isDefault: boolean;
+};
+
+export type CreateCustomerAddressInput = {
+  label?: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state?: string;
+  pincode?: string;
+  latitude?: number;
+  longitude?: number;
+  isDefault?: boolean;
+};
+
+function getAccessToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem("qb_access_token");
+}
+
+async function authenticatedRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const token = getAccessToken();
+  if (!token) throw new Error("Please sign in to manage delivery addresses");
+
+  return request<T>(path, {
+    ...init,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...(init.headers ?? {}),
+    },
+  });
+}
+
+export function listAddresses(): Promise<CustomerAddress[]> {
+  return authenticatedRequest<CustomerAddress[]>("/api/v1/addresses");
+}
+
+export function createAddress(input: CreateCustomerAddressInput): Promise<CustomerAddress> {
+  return authenticatedRequest<CustomerAddress>("/api/v1/addresses", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export function updateAddress(
+  id: string,
+  input: Partial<CreateCustomerAddressInput>
+): Promise<CustomerAddress> {
+  return authenticatedRequest<CustomerAddress>(`/api/v1/addresses/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteAddress(id: string): Promise<void> {
+  await authenticatedRequest<null>(`/api/v1/addresses/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+}

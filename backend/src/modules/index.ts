@@ -11,6 +11,7 @@ import deliveryAdminRouter from "./delivery/delivery.admin.routes";
 import settlementsRouter from "./settlements/settlements.routes";
 import prescriptionsRouter from "./prescriptions/prescriptions.routes";
 import paymentRouter from "./payments/payment.routes";
+import { addressesRouter } from "./addresses/index";
 
 const router: Router = Router();
 
@@ -26,5 +27,6 @@ router.use("/admin/delivery", deliveryAdminRouter);
 router.use("/settlements", settlementsRouter);
 router.use("/prescriptions", prescriptionsRouter);
 router.use("/payments", paymentRouter);
+router.use("/addresses", addressesRouter);
 
 export default router;
