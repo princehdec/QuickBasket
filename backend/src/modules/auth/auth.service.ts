@@ -63,8 +63,10 @@ export class AuthService {
       expiresAt: new Date(Date.now() + OTP_TTL_MS),
       maxAttempts: OTP_MAX_ATTEMPTS,
     });
+    console.info("[OTP] challenge persisted");
 
     await this.otpDelivery.send(dto.phone, code);
+    console.info("[OTP] delivery completed");
 
     return {
       challengeId: challenge.id,
