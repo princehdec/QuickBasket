@@ -35,8 +35,8 @@ async function findPayment(entity: RazorpayEntity) {
 router.post("/create", authenticate, asyncHandler(async (req: Request, res: Response) => {
   const input = createSchema.parse(req.body);
   const [order] = await db.select().from(orders).where(and(eq(orders.id, input.orderId), eq(orders.userId, req.user!.sub))).limit(1);
-  if (!order) { res.status(404); sendSuccess(res, null, "Order not found"); return; }
-  if (order.paymentStatus === "completed") { res.status(409); sendSuccess(res, null, "Order is already paid"); return; }
+  if (!order) { sendSuccess(res, null, "Order not found", 404); return; }
+  if (order.paymentStatus === "completed") { sendSuccess(res, null, "Order is already paid", 409); return; }
 
   const gateway = getPaymentGateway();
   const session = await gateway.createPayment({ orderId: order.id, amount: Number(order.grandTotal), currency: "INR", method: input.method });
@@ -47,14 +47,14 @@ router.post("/create", authenticate, asyncHandler(async (req: Request, res: Resp
 router.post("/verify", authenticate, asyncHandler(async (req: Request, res: Response) => {
   const input = verifySchema.parse(req.body);
   const [order] = await db.select().from(orders).where(and(eq(orders.id, input.orderId), eq(orders.userId, req.user!.sub))).limit(1);
-  if (!order) { res.status(404); sendSuccess(res, null, "Order not found"); return; }
+  if (!order) { sendSuccess(res, null, "Order not found", 404); return; }
   const gateway = getPaymentGateway();
   const verifier = gateway as typeof gateway & { verifyCheckoutSignature?: (orderId: string, paymentId: string, signature: string) => boolean };
   if (!verifier.verifyCheckoutSignature?.(input.razorpayOrderId, input.razorpayPaymentId, input.razorpaySignature)) {
-    res.status(400); sendSuccess(res, null, "Invalid payment signature"); return;
+    sendSuccess(res, null, "Invalid payment signature", 400); return;
   }
   const [payment] = await db.update(payments).set({ gatewayPaymentId: input.razorpayPaymentId, status: "completed", updatedAt: new Date() }).where(and(eq(payments.orderId, order.id), eq(payments.gatewayOrderId, input.razorpayOrderId))).returning();
-  if (!payment) { res.status(404); sendSuccess(res, null, "Payment record not found"); return; }
+  if (!payment) { sendSuccess(res, null, "Payment record not found", 404); return; }
   await db.update(orders).set({ paymentStatus: "completed", updatedAt: new Date() }).where(eq(orders.id, order.id));
   sendSuccess(res, { paymentId: payment.id, orderId: order.id }, "Payment verified");
 }));
@@ -63,7 +63,7 @@ router.post("/webhook", asyncHandler(async (req: RawBodyRequest, res: Response) 
   const signature = req.header("x-razorpay-signature");
   const rawBody = req.rawBody;
   if (!signature || !rawBody || !getPaymentGateway().verifyWebhook(signature, rawBody.toString("utf8"))) {
-    res.status(401); sendSuccess(res, null, "Invalid webhook signature"); return;
+    sendSuccess(res, null, "Invalid webhook signature", 401); return;
   }
 
   const body = req.body as RazorpayWebhookBody;
@@ -75,7 +75,7 @@ router.post("/webhook", asyncHandler(async (req: RawBodyRequest, res: Response) 
   }
 
   if (entity.amount !== undefined && body.event?.startsWith("payment.") && Math.abs(Number(payment.amount) - entity.amount / 100) > 0.01) {
-    res.status(400); sendSuccess(res, null, "Payment amount mismatch"); return;
+    sendSuccess(res, null, "Payment amount mismatch", 400); return;
   }
 
   const event = body.event;
