@@ -117,7 +117,43 @@ Naming convention: tables and columns in `snake_case`, per `PROJECT_RULES.md`.
 | quantity | integer | |
 | price_at_order | decimal | snapshot price, so later price changes don't rewrite history |
 
+### `prescription_submissions`
+| Column | Type | Notes |
+|---|---|---|
+| id | PK | |
+| customer_id | FK → users | owner of the submission |
+| business_id | FK → businesses | pharmacy/business the prescription is intended for |
+| document_key | string | trusted object-storage key under the customer's namespace; never an arbitrary public URL |
+| document_file_name / document_mime_type | string | review metadata; accepted types are PDF, JPEG, and PNG |
+| document_size_bytes | integer | bounded upload metadata; current maximum is 10 MB |
+| status | enum | `pending`, `approved`, `rejected`, `expired` |
+| reviewer_id | FK → users, nullable | operations reviewer who made the decision |
+| rejection_reason | text, nullable | required for rejected submissions |
+| expires_at | timestamp | approval validity window; current implementation uses 30 days |
+| created_at / updated_at | timestamp | |
+
+### `prescription_submission_items`
+| Column | Type | Notes |
+|---|---|---|
+| id | PK | |
+| submission_id | FK → prescription_submissions | |
+| product_id | FK → products | prescription-required product covered by the document |
+| quantity | integer | maximum quantity covered by the approval |
+
+### `prescription_review_events`
+| Column | Type | Notes |
+|---|---|---|
+| id | PK | |
+| submission_id | FK → prescription_submissions | |
+| event_type | enum | `submitted`, `approved`, `rejected`, `expired` |
+| actor_id | FK → users, nullable | customer or reviewer responsible for the event |
+| note | text, nullable | decision context without storing the prescription contents |
+| created_at | timestamp | append-only audit timestamp |
+
+`orders` adds nullable `prescription_submission_id` and `prescription_verified_at`. Checkout validates customer ownership, business match, approved status, expiry, and item quantities inside the order transaction before persisting the linkage.
+
 ### `order_status_history`
+
 | Column | Type | Notes |
 |---|---|---|
 | id | PK | |

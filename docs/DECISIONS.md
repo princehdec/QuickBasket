@@ -16,6 +16,18 @@ Every entry follows: **Context → Decision → Consequences → Status**. Newes
 
 ---
 
+## ADR-016: Pre-Order Prescription Review and Checkout Linkage
+
+**Context:** Prescription-required products were blocked at checkout, while the existing prescription endpoint accepted an already-created order and an arbitrary public document URL. That sequence could never safely approve a prescription before the order guard and did not provide item-level linkage or review history.
+
+**Decision:** Use a customer-owned pre-order prescription submission tied to one business and the specific prescription-required products and quantities it covers. Store trusted object-storage metadata, keep pending/approved/rejected/expired state, append review events, require a rejection reason, and attach an approved unexpired submission to the order inside the same transaction that validates customer ownership, business match, product coverage, and quantity. Continue using the existing operations authorization temporarily; a dedicated pharmacist permission remains a launch decision.
+
+**Consequences:** Prescription checkout becomes auditable and cannot rely on an arbitrary public URL or a client-only approval flag. The schema migration is prepared but not applied to shared or production databases. A production upload adapter and customer/admin UI are still required before this workflow is launch-ready.
+
+**Status:** Approved and implemented on the local `feature/ui-redesign` worktree; focused validation tests and backend build pass. Migration application is pending separate confirmation.
+
+---
+
 ## ADR-014: Fixed-Inbox SMTP OTP for Testing
 
 **Context:** The founder selected phone OTP as the launch authentication method, but the current test phase needs a real delivery channel without yet committing to an SMS vendor or spending on live messaging.

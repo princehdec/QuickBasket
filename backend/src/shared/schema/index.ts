@@ -85,3 +85,20 @@ export type { SettlementBatch, NewSettlementBatch } from "./settlements";
 // ── Prescription Reviews ───────────────────────────
 export { prescriptionReviews, prescriptionReviewStatusEnum } from "./prescriptions";
 export type { PrescriptionReview, NewPrescriptionReview } from "./prescriptions";
+
+// ── Pre-order Prescription Submissions ──────────────
+export {
+  prescriptionSubmissions,
+  prescriptionSubmissionItems,
+  prescriptionReviewEvents,
+  prescriptionSubmissionStatusEnum,
+  prescriptionReviewEventTypeEnum,
+} from "./prescriptionSubmissions";
+export type {
+  PrescriptionSubmission,
+  NewPrescriptionSubmission,
+  PrescriptionSubmissionItem,
+  NewPrescriptionSubmissionItem,
+  PrescriptionReviewEvent,
+  NewPrescriptionReviewEvent,
+} from "./prescriptionSubmissions";

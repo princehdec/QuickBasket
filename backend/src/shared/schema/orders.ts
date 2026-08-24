@@ -10,6 +10,7 @@ import {
 import { users } from "./users";
 import { businesses } from "./businesses";
 import { addresses } from "./addresses";
+import { prescriptionSubmissions } from "./prescriptionSubmissions";
 import {
   orderStatusEnum,
   paymentMethodEnum,
@@ -30,6 +31,11 @@ export const orders = pgTable(
     addressId: uuid("address_id")
       .notNull()
       .references(() => addresses.id, { onDelete: "cascade" }),
+    prescriptionSubmissionId: uuid("prescription_submission_id").references(
+      () => prescriptionSubmissions.id,
+      { onDelete: "set null" },
+    ),
+    prescriptionVerifiedAt: timestamp("prescription_verified_at"),
     status: orderStatusEnum("status").notNull().default("placed"),
     paymentMethod: paymentMethodEnum("payment_method").notNull(),
     paymentStatus: paymentStatusEnum("payment_status")
@@ -63,6 +69,7 @@ export const orders = pgTable(
   (table) => [
     index("orders_user_id_idx").on(table.userId),
     index("orders_business_id_idx").on(table.businessId),
+    index("orders_prescription_submission_idx").on(table.prescriptionSubmissionId),
     index("orders_status_idx").on(table.status),
     index("orders_created_at_idx").on(table.createdAt),
   ]

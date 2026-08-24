@@ -4,6 +4,7 @@ export const createOrderSchema = z.object({
   businessId: z.string().uuid(),
   addressId: z.string().uuid(),
   paymentMethod: z.enum(["upi", "credit_card", "debit_card", "net_banking", "wallet"]),
+  prescriptionSubmissionId: z.string().uuid().optional(),
   items: z
     .array(
       z.object({

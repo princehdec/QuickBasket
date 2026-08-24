@@ -11,6 +11,8 @@ function toResponse(order: {
   orderNumber: string;
   businessId: string;
   addressId: string;
+  prescriptionSubmissionId: string | null;
+  prescriptionVerifiedAt: Date | null;
   status: string;
   paymentMethod: string;
   paymentStatus: string;
@@ -33,6 +35,8 @@ function toResponse(order: {
     orderNumber: order.orderNumber,
     businessId: order.businessId,
     addressId: order.addressId,
+    prescriptionSubmissionId: order.prescriptionSubmissionId,
+    prescriptionVerifiedAt: order.prescriptionVerifiedAt?.toISOString() ?? null,
     status: order.status,
     paymentMethod: order.paymentMethod,
     paymentStatus: order.paymentStatus,
@@ -81,10 +85,12 @@ export class OrdersService {
       throw ApiError.badRequest("One or more products are unavailable for this business");
     }
 
-    const prescriptionRequired = productRows.some((product) => product.requiresPrescription);
-    if (prescriptionRequired) {
-      throw ApiError.badRequest("Prescription verification is required before ordering this product");
-    }
+    const prescriptionItems = dto.items.filter((item) =>
+      productRows.some((product) => product.id === item.productId && product.requiresPrescription),
+    );
+    const prescriptionSubmissionId = prescriptionItems.length > 0
+      ? dto.prescriptionSubmissionId
+      : undefined;
 
     const productById = new Map(productRows.map((product) => [product.id, product]));
     let subtotal = 0;
@@ -113,7 +119,14 @@ export class OrdersService {
       grandTotal: Number((subtotal + deliveryFee + platformFee + taxes).toFixed(2)),
     };
 
-    const result = await this.repo.createOrder(userId, dto, pricing, productRows);
+    const result = await this.repo.createOrder(
+      userId,
+      dto,
+      pricing,
+      productRows,
+      prescriptionSubmissionId,
+      prescriptionItems,
+    );
     return toResponse(result.order, result.items);
   }
 

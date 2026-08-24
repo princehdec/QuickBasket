@@ -82,10 +82,23 @@ REST API, JSON over HTTPS. Base path: `/api/v1`.
 
 | Method | Endpoint | Purpose |
 |---|---|---|
-| POST | `/orders` | Place order from current cart (`address_id`, `payment_method`) |
+| POST | `/orders` | Place order from current cart (`address_id`, `payment_method`, optional `prescription_submission_id`) |
+
 | GET | `/orders` | Order history for current user |
 | GET | `/orders/:id` | Order detail + status |
 | GET | `/orders/:id/status` | Lightweight status-only poll, for tracking screen |
+
+## Prescriptions
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/prescriptions/submissions` | Submit a prescription document key and the prescription-required products it covers for review. The document key must be issued by the trusted upload service under the authenticated customer's namespace. |
+| GET | `/prescriptions/submissions` | List the authenticated customer's prescription submissions and statuses. |
+| GET | `/prescriptions/submissions/:id` | Retrieve one owned submission with linked items and review-event history. |
+| GET | `/prescriptions/admin` | Operations review queue of pending submissions. |
+| PATCH | `/prescriptions/admin/:id` | Approve or reject a pending submission; rejection requires a reason and every decision creates an audit event. |
+
+Prescription-required products remain blocked at checkout unless the order includes an approved, unexpired submission belonging to the customer, for the same business, and covering each requested product and quantity. The current implementation accepts storage metadata but does not yet provide the production upload adapter.
 
 ## Payments
 

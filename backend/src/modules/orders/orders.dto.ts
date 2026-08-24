@@ -8,6 +8,7 @@ export type CreateOrderDTO = {
   addressId: string;
   paymentMethod: "upi" | "credit_card" | "debit_card" | "net_banking" | "wallet";
   items: CreateOrderItemDTO[];
+  prescriptionSubmissionId?: string;
   deliveryNotes?: string;
 };
 
@@ -16,6 +17,8 @@ export type OrderResponseDTO = {
   orderNumber: string;
   businessId: string;
   addressId: string;
+  prescriptionSubmissionId: string | null;
+  prescriptionVerifiedAt: string | null;
   status: string;
   paymentMethod: string;
   paymentStatus: string;

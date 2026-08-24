@@ -1,36 +1,70 @@
 import { Router, type Request, type Response } from "express";
-import { and, eq } from "drizzle-orm";
-import { z } from "zod";
 import { authenticate } from "../../shared/middleware/authenticate";
 import { operationsOnly } from "../../shared/middleware/authorize";
 import { asyncHandler } from "../../shared/utils/asyncHandler";
 import { sendSuccess } from "../../shared/utils/apiResponse";
-import { db } from "../../shared/db/index";
-import { orders, prescriptionReviews } from "../../shared/schema/index";
+import { ApiError } from "../../shared/utils/apiError";
+import { PrescriptionsService } from "./prescriptions.service";
+import {
+  createPrescriptionSubmissionSchema,
+  prescriptionSubmissionIdSchema,
+  reviewPrescriptionSubmissionSchema,
+} from "./prescriptions.validation";
 
 const router: Router = Router();
-const submitSchema = z.object({ orderId: z.string().uuid(), documentUrl: z.string().url() });
-const reviewSchema = z.object({ status: z.enum(["approved", "rejected"]), rejectionReason: z.string().max(500).optional() });
+const service = new PrescriptionsService();
 
-router.post("/", authenticate, asyncHandler(async (req: Request, res: Response) => {
-  const input = submitSchema.parse(req.body);
-  const [order] = await db.select().from(orders).where(and(eq(orders.id, input.orderId), eq(orders.userId, req.user!.sub))).limit(1);
-  if (!order) { res.status(404); sendSuccess(res, null, "Order not found"); return; }
-  const [review] = await db.insert(prescriptionReviews).values({ orderId: input.orderId, customerId: req.user!.sub, documentUrl: input.documentUrl }).returning();
-  sendSuccess(res, review, "Prescription submitted", 201);
-}));
+router.post(
+  "/submissions",
+  authenticate,
+  asyncHandler(async (req: Request, res: Response) => {
+    const input = createPrescriptionSubmissionSchema.parse(req.body);
+    const submission = await service.submit(req.user!.sub, input);
+    sendSuccess(res, submission, "Prescription submitted for review", 201);
+  }),
+);
 
-router.get("/admin", authenticate, operationsOnly, asyncHandler(async (_req: Request, res: Response) => {
-  const reviews = await db.select().from(prescriptionReviews);
-  sendSuccess(res, reviews, "Prescription review queue retrieved");
-}));
+router.get(
+  "/submissions",
+  authenticate,
+  asyncHandler(async (req: Request, res: Response) => {
+    const submissions = await service.listForCustomer(req.user!.sub);
+    sendSuccess(res, submissions, "Prescription submissions retrieved");
+  }),
+);
 
-router.patch("/admin/:id", authenticate, operationsOnly, asyncHandler(async (req: Request, res: Response) => {
-  const reviewId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const input = reviewSchema.parse(req.body);
-  if (!reviewId) throw new Error("Prescription review id is required");
-  const [updated] = await db.update(prescriptionReviews).set({ status: input.status, rejectionReason: input.rejectionReason, reviewerId: req.user!.sub, reviewedAt: new Date(), updatedAt: new Date() }).where(eq(prescriptionReviews.id, reviewId)).returning();
-  sendSuccess(res, updated ?? null, updated ? "Prescription review updated" : "Prescription review not found");
-}));
+router.get(
+  "/submissions/:id",
+  authenticate,
+  asyncHandler(async (req: Request, res: Response) => {
+    const { id } = prescriptionSubmissionIdSchema.parse(req.params);
+    const submission = await service.getForCustomer(req.user!.sub, id);
+    if (!submission) throw ApiError.notFound("Prescription submission not found");
+    sendSuccess(res, submission, "Prescription submission retrieved");
+  }),
+);
+
+router.get(
+  "/admin",
+  authenticate,
+  operationsOnly,
+  asyncHandler(async (_req: Request, res: Response) => {
+    const submissions = await service.listReviewQueue();
+    sendSuccess(res, submissions, "Prescription review queue retrieved");
+  }),
+);
+
+router.patch(
+  "/admin/:id",
+  authenticate,
+  operationsOnly,
+  asyncHandler(async (req: Request, res: Response) => {
+    const { id } = prescriptionSubmissionIdSchema.parse(req.params);
+    const input = reviewPrescriptionSubmissionSchema.parse(req.body);
+    const submission = await service.review(req.user!.sub, id, input);
+    if (!submission) throw ApiError.notFound("Prescription submission not found");
+    sendSuccess(res, submission, "Prescription review updated");
+  }),
+);
 
 export default router;

@@ -1,10 +1,13 @@
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, gt, inArray } from "drizzle-orm";
 import { db } from "../../shared/db/index";
+import { ApiError } from "../../shared/utils/apiError";
 import {
   businesses,
   orderItems,
   orders,
   products,
+  prescriptionSubmissionItems,
+  prescriptionSubmissions,
   type Order,
   type OrderItem,
   type Product,
@@ -48,8 +51,60 @@ export class OrdersRepository {
     return business;
   }
 
-  async createOrder(userId: string, dto: CreateOrderDTO, pricing: OrderPricing, productRows: Product[]) {
+  async createOrder(
+    userId: string,
+    dto: CreateOrderDTO,
+    pricing: OrderPricing,
+    productRows: Product[],
+    prescriptionSubmissionId?: string,
+    prescriptionItems: CreateOrderDTO["items"] = [],
+  ) {
     return db.transaction(async (tx) => {
+      if (prescriptionItems.length > 0) {
+        if (!prescriptionSubmissionId) {
+          throw ApiError.badRequest("An approved prescription is required before ordering this product");
+        }
+
+        const [submission] = await tx
+          .select()
+          .from(prescriptionSubmissions)
+          .where(
+            and(
+              eq(prescriptionSubmissions.id, prescriptionSubmissionId),
+              eq(prescriptionSubmissions.customerId, userId),
+              eq(prescriptionSubmissions.businessId, dto.businessId),
+              eq(prescriptionSubmissions.status, "approved"),
+              gt(prescriptionSubmissions.expiresAt, new Date()),
+            ),
+          )
+          .limit(1);
+        if (!submission) {
+          throw ApiError.badRequest("The prescription approval is missing, expired, or not valid for this store");
+        }
+
+        const approvedItems = await tx
+          .select()
+          .from(prescriptionSubmissionItems)
+          .where(
+            and(
+              eq(prescriptionSubmissionItems.submissionId, submission.id),
+              inArray(
+                prescriptionSubmissionItems.productId,
+                prescriptionItems.map((item) => item.productId),
+              ),
+            ),
+          );
+        const approvedQuantityByProduct = new Map(
+          approvedItems.map((item) => [item.productId, item.quantity]),
+        );
+        for (const item of prescriptionItems) {
+          const approvedQuantity = approvedQuantityByProduct.get(item.productId);
+          if (!approvedQuantity || item.quantity > approvedQuantity) {
+            throw ApiError.badRequest("The approved prescription does not cover the requested quantity");
+          }
+        }
+      }
+
       const [order] = await tx
         .insert(orders)
         .values({
@@ -57,6 +112,8 @@ export class OrdersRepository {
           userId,
           businessId: dto.businessId,
           addressId: dto.addressId,
+          prescriptionSubmissionId: prescriptionSubmissionId ?? null,
+          prescriptionVerifiedAt: prescriptionSubmissionId && prescriptionItems.length > 0 ? new Date() : null,
           status: "placed",
           paymentMethod: dto.paymentMethod === "net_banking" || dto.paymentMethod === "wallet" ? "upi" : dto.paymentMethod,
           paymentStatus: "pending",
