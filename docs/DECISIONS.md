@@ -4,6 +4,18 @@ Every entry follows: **Context → Decision → Consequences → Status**. Newes
 
 ---
 
+## ADR-015: Brevo HTTPS API for Test-Inbox OTP Delivery
+
+**Context:** The founder selected a fixed test inbox for OTP testing. Render Free blocks outbound SMTP ports and the live service timed out on both the configured SMTP route and Brevo's alternate port, so SMTP cannot be the current delivery transport.
+
+**Decision:** Use Brevo's HTTPS transactional email API from the backend, authenticated with a dedicated server-side Brevo API key stored only in deployment secrets. Keep the existing SMTP adapter as an inactive fallback until it is explicitly removed. Brevo MCP may be used for assistant-side Brevo account inspection and operational actions, but it is not the runtime transport for customer OTP requests because the deployed backend cannot depend on the assistant's MCP session.
+
+**Consequences:** Render can send OTP requests over HTTPS without SMTP egress. The test mode still sends every OTP to `OTP_EMAIL_TO`; it does not provide real phone delivery and is not launch-ready. The Brevo API key must never be committed, logged, or exposed to the browser. A future production launch still needs phone-capable OTP delivery and appropriate abuse controls.
+
+**Status:** Accepted for testing; implementation pending deployment secret and delivery verification.
+
+---
+
 ## ADR-014: Fixed-Inbox SMTP OTP for Testing
 
 **Context:** The founder selected phone OTP as the launch authentication method, but the current test phase needs a real delivery channel without yet committing to an SMS vendor or spending on live messaging.

@@ -17,7 +17,7 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().url().optional(),
   SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
-  OTP_PROVIDER: z.enum(["console", "email"]).default("console"),
+  OTP_PROVIDER: z.enum(["console", "email", "brevo_api"]).default("console"),
   OTP_EXPOSE_TEST_CODE: z
     .enum(["true", "false"])
     .default("false")
@@ -40,6 +40,7 @@ const envSchema = z.object({
   SMTP_PORT: z.coerce.number().optional(),
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
+  BREVO_API_KEY: z.string().optional(),
   PAYMENT_PROVIDER: z.enum(["razorpay"]).optional(),
   RAZORPAY_KEY_ID: z.string().optional(),
   RAZORPAY_KEY_SECRET: z.string().optional(),
