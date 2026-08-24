@@ -33,6 +33,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 - Vendor mobile now uses Expo SecureStore on native platforms, supports live order refresh, guarded order progression, and settlement feedback.
 - Console OTP delivery no longer logs phone numbers or plaintext codes; an explicit non-production `OTP_EXPOSE_TEST_CODE=false` gate is available for isolated API testing.
 - Payment routes now capture the raw Razorpay webhook body, verify `x-razorpay-signature`, validate payment amounts, return correct error statuses, and apply idempotent captured/failed/refunded state transitions to payment and order records.
+- Admin web now has refreshable live dispatch metrics, an assignment form without fake default earnings, and one-click selection of unassigned orders.
 - Shared UI primitives: `PageHeader`, `EmptyState`, `VegMark`, plus Badge
 
   variants (`offer`, `khata`, `success`) and Button variants (`accent`, `khata`).
