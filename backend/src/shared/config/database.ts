@@ -34,7 +34,18 @@ function normalizeDatabaseUrl(databaseUrl: string): string {
   return `${databaseUrl.slice(0, authorityStart)}${username}:${encodedPassword}${databaseUrl.slice(atIndex)}`;
 }
 
-const queryClient = postgres(normalizeDatabaseUrl(env.DATABASE_URL),
+const normalizedDatabaseUrl = normalizeDatabaseUrl(env.DATABASE_URL);
+
+try {
+  const parsedDatabaseUrl = new URL(normalizedDatabaseUrl);
+  console.log(
+    `[Database] connection target ${parsedDatabaseUrl.hostname}:${parsedDatabaseUrl.port || "5432"}`,
+  );
+} catch {
+  console.warn("[Database] connection target could not be parsed");
+}
+
+const queryClient = postgres(normalizedDatabaseUrl,
   env.NODE_ENV === "production"
     ? {}
     : {
