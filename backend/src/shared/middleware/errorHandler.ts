@@ -24,8 +24,15 @@ export function errorHandler(
     return;
   }
 
+  const errorCode = "code" in err && typeof err.code === "string" ? err.code : undefined;
+  console.error("Unhandled API error:", {
+    name: err.name,
+    code: errorCode,
+    message: err.message.slice(0, 240),
+  });
+
   if (env.NODE_ENV === "development") {
-    console.error("Unhandled error:", err);
+    console.error(err.stack);
   }
 
   sendError(res, "Internal server error", 500);
