@@ -1,22 +1,22 @@
 "use client";
 
-import { products } from "../../../lib/mock/products";
+import type { CustomerProduct } from "../../../lib/api";
 import { useCart } from "../../contexts/CartContext";
 import { QuantitySelector } from "../cart/QuantitySelector";
 import { VegMark } from "../ui/VegMark";
 import Link from "next/link";
+import { useLang } from "../../i18n/LanguageContext";
 
-export function BoughtTogether({ productIds }: { productIds: string[] }) {
+export function BoughtTogether({ products }: { products: CustomerProduct[] }) {
+  const { t } = useLang();
   const { items, addItem, increaseQuantity, decreaseQuantity } = useCart();
-  const bought = productIds
-    .map((id) => products.find((p) => p.id === id))
-    .filter(Boolean);
+  const bought = products;
 
   if (bought.length === 0) return null;
 
   return (
     <section>
-      <h2 className="font-display text-base font-bold tracking-tight text-gray-900">Frequently Bought Together</h2>
+      <h2 className="font-display text-base font-bold tracking-tight text-gray-900">{t("Frequently Bought Together")}</h2>
       <div className="mt-3 flex gap-3 overflow-x-auto pb-2 no-scrollbar">
         {bought.map((p) => {
           if (!p) return null;
@@ -59,7 +59,7 @@ export function BoughtTogether({ productIds }: { productIds: string[] }) {
                     onClick={() => addItem(p)}
                     className="flex h-7 w-full items-center justify-center rounded-button bg-brand-100 font-display text-xs font-bold text-brand-800 transition-all duration-150 hover:bg-brand-600 hover:text-paper-50 active:scale-[0.97]"
                   >
-                    Add
+                    {t("Add")}
                   </button>
                 )}
               </div>

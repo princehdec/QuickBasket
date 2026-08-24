@@ -202,6 +202,13 @@ export async function getBusiness(id: string): Promise<CustomerBusiness> {
   return request(`/api/v1/businesses/${encodeURIComponent(id)}`);
 }
 
+export async function getProduct(id: string): Promise<CustomerProduct> {
+  const result = await request<Parameters<typeof toCustomerProduct>[0]>(
+    `/api/v1/products/${encodeURIComponent(id)}`
+  );
+  return toCustomerProduct(result);
+}
+
 export async function listProducts(params: {
   businessId?: string;
   categoryId?: string;

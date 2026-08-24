@@ -2,28 +2,28 @@
 
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { products } from "../../../lib/mock/products";
+import type { CustomerProduct } from "../../../lib/api";
 import { useCart } from "../../contexts/CartContext";
 import { QuantitySelector } from "../cart/QuantitySelector";
 import { VegMark } from "../ui/VegMark";
+import { useLang } from "../../i18n/LanguageContext";
 
-export function RelatedProducts({ productIds }: { productIds: string[] }) {
+export function RelatedProducts({ products }: { products: CustomerProduct[] }) {
+  const { t } = useLang();
   const { items, addItem, increaseQuantity, decreaseQuantity } = useCart();
-  const related = productIds
-    .map((id) => products.find((p) => p.id === id))
-    .filter(Boolean);
+  const related = products;
 
   if (related.length === 0) return null;
 
   return (
     <section>
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-base font-bold tracking-tight text-gray-900">Similar Products</h2>
+        <h2 className="font-display text-base font-bold tracking-tight text-gray-900">{t("Similar Products")}</h2>
         <Link
           href="/stores"
           className="inline-flex items-center gap-0.5 text-sm font-bold text-brand-700 transition-colors hover:text-brand-800"
         >
-          View All
+          {t("View All")}
           <ChevronRight size={15} />
         </Link>
       </div>
@@ -73,7 +73,7 @@ export function RelatedProducts({ productIds }: { productIds: string[] }) {
                     }}
                     className="flex h-7 w-full items-center justify-center rounded-button bg-brand-100 font-display text-xs font-bold text-brand-800 transition-all duration-150 hover:bg-brand-600 hover:text-paper-50 active:scale-[0.97]"
                   >
-                    Add
+                    {t("Add")}
                   </button>
                 )}
               </div>
