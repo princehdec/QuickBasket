@@ -1,1 +1,1 @@
-export {};
+export { default as notificationsRouter } from "./notifications.routes";
