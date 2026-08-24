@@ -22,9 +22,9 @@ Every entry follows: **Context → Decision → Consequences → Status**. Newes
 
 **Decision:** Use a customer-owned pre-order prescription submission tied to one business and the specific prescription-required products and quantities it covers. Store trusted object-storage metadata, keep pending/approved/rejected/expired state, append review events, require a rejection reason, and attach an approved unexpired submission to the order inside the same transaction that validates customer ownership, business match, product coverage, and quantity. Continue using the existing operations authorization temporarily; a dedicated pharmacist permission remains a launch decision.
 
-**Consequences:** Prescription checkout becomes auditable and cannot rely on an arbitrary public URL or a client-only approval flag. The schema migration is prepared but not applied to shared or production databases. A production upload adapter and customer/admin UI are still required before this workflow is launch-ready.
+**Consequences:** Prescription checkout becomes auditable and cannot rely on an arbitrary public URL or a client-only approval flag. The additive schema migration is now applied to the configured production database. A production upload adapter and customer/admin UI are still required before this workflow is launch-ready.
 
-**Status:** Approved and implemented on the local `feature/ui-redesign` worktree; focused validation tests and backend build pass. Migration application is pending separate confirmation.
+**Status:** Approved, implemented, and deployed on `feature/ui-redesign` on 24 Aug 2026. The additive migration was applied successfully to the configured production database; focused validation tests passed, the backend build passed, and live health/auth-boundary smoke checks returned expected statuses. The customer/admin upload adapter and UI remain before launch readiness.
 
 ---
 
