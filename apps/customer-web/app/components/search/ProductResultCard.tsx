@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import type { Product } from "../../../lib/mock/products";
+import type { CustomerProduct } from "../../../lib/api";
 import { useCart } from "../../contexts/CartContext";
 import { QuantitySelector } from "../cart/QuantitySelector";
 import { VegMark } from "../ui/VegMark";
 
-export function ProductResultCard({ product }: { product: Product }) {
+export function ProductResultCard({ product }: { product: CustomerProduct }) {
   const { items, addItem, increaseQuantity, decreaseQuantity } = useCart();
   const cartItem = items.find((i) => i.product.id === product.id);
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
@@ -16,7 +16,7 @@ export function ProductResultCard({ product }: { product: Product }) {
   return (
     <div className="flex items-center gap-4 rounded-card border border-paper-200/70 bg-surface p-3 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift">
       <Link
-        href={`/store/${product.storeId}`}
+        href={`/product/${product.id}`}
         className={cn(
           "flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br",
           product.image
@@ -27,7 +27,7 @@ export function ProductResultCard({ product }: { product: Product }) {
       </Link>
 
       <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
-        <Link href={`/store/${product.storeId}`} className="min-w-0">
+        <Link href={`/product/${product.id}`} className="min-w-0">
           <h4 className="truncate text-sm font-semibold text-gray-900">
             {product.name}
           </h4>

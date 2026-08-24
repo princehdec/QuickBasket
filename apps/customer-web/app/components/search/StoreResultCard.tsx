@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { Clock, MapPin, ShoppingBag, Star } from "lucide-react";
-import type { Store } from "../../../lib/dummyStores";
+import type { CustomerStore } from "../../../lib/api";
 
-export function StoreResultCard({ store }: { store: Store }) {
+export function StoreResultCard({ store }: { store: CustomerStore }) {
   return (
     <Link
       href={`/store/${store.id}`}
