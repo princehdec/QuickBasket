@@ -45,16 +45,9 @@ try {
   console.warn("[Database] connection target could not be parsed");
 }
 
-const queryClient = postgres(normalizedDatabaseUrl,
-  env.NODE_ENV === "production"
-    ? {}
-    : {
-        debug(connection, query, params) {
-          console.log("SQL:", query);
-          console.log("PARAMS:", params);
-        },
-      }
-);
+// Never enable SQL/parameter logging here: queries can contain phone numbers,
+// OTP hashes, addresses, and other user data even in the development test mode.
+const queryClient = postgres(normalizedDatabaseUrl);
 
 export const db = drizzle(queryClient);
 

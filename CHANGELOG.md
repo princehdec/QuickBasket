@@ -6,6 +6,8 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 ## [Unreleased]
 
 ### Changed
+- **Privacy hardening:** disabled SQL and parameter logging in the backend so development-mode console-OTP testing does not expose phone numbers, OTP hashes, addresses, or other user data in Render logs.
+
 - **Full visual redesign — "Kirana Modern"**: every screen restyled around warm
   paper surfaces, a deep bottle-green primary, turmeric reserved for offers, and
   khata red reserved for the credit ledger. Typography switched from Geist to
