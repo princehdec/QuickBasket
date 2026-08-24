@@ -29,7 +29,7 @@ const envSchema = z.object({
         const trimmed = value.trim();
         return (
           z.string().email().safeParse(trimmed).success ||
-          /^.+\\s<[^<>@\\s]+@[^<>@\\s]+\\.[^<>@\\s]+>$/.test(trimmed)
+          /^.+\s<[^<>@\s]+@[^<>@\s]+\.[^<>@\s]+>$/.test(trimmed)
         );
       },
       { message: "Invalid email" },
