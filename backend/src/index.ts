@@ -8,7 +8,7 @@ import routes from "./modules/index";
 const app: express.Express = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(cors({ origin: env.CORS_ORIGIN.split(",").map((origin) => origin.trim()).filter(Boolean) }));
 app.use(express.json());
 
 app.get("/health", (_req, res) => {
