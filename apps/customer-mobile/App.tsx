@@ -17,7 +17,7 @@ const cities = ["Lucknow", "Gopalganj"] as const;
 type City = (typeof cities)[number];
 
 type Business = { id: string; name: string; city: string; businessType: string; rating: number | string | null; isActive: boolean };
-type Product = { id: string; businessId: string; name: string; unit: string | null; price: string | number; categoryName?: string | null; stock: number; isBestseller: boolean; isActive: boolean };
+type Product = { id: string; businessId: string; name: string; unit: string | null; price: string | number; categoryName?: string | null; stock: number; requiresPrescription: boolean; isBestseller: boolean; isActive: boolean };
 type ApiEnvelope<T> = { data: T; message?: string };
 
 async function apiRequest<T>(path: string): Promise<T> {
@@ -102,6 +102,10 @@ export default function App() {
   const cartCount = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
 
   const addToCart = (product: Product) => {
+    if (product.requiresPrescription) {
+      setMessage("Prescription verification required / प्रिस्क्रिप्शन सत्यापन आवश्यक");
+      return;
+    }
     setCart((current) => ({ ...current, [product.id]: (current[product.id] ?? 0) + 1 }));
     setMessage(`${product.name} added to cart / cart में जोड़ा गया`);
   };
@@ -155,8 +159,9 @@ export default function App() {
       <View style={styles.productMark}><Text style={styles.productMarkText}>{item.name.slice(0, 1)}</Text></View>
       <Text numberOfLines={2} style={styles.productName}>{item.name}</Text>
       <Text style={styles.productMeta}>{item.unit ?? "1 unit"} · ₹{item.price}</Text>
-      <Pressable onPress={() => addToCart(item)} style={({ pressed }) => [styles.addButton, pressed && styles.pressed]} accessibilityLabel={`Add ${item.name} to cart`}>
-        <Text style={styles.addButtonText}>{cart[item.id] ? `Add more · ${cart[item.id]}` : "Add to cart / जोड़ें"}</Text>
+      {item.requiresPrescription ? <Text style={styles.prescriptionText}>Prescription required / प्रिस्क्रिप्शन आवश्यक</Text> : null}
+      <Pressable onPress={() => addToCart(item)} disabled={item.requiresPrescription} style={({ pressed }) => [styles.addButton, pressed && styles.pressed]} accessibilityLabel={`Add ${item.name} to cart`}>
+        <Text style={styles.addButtonText}>{item.requiresPrescription ? "Prescription required / प्रिस्क्रिप्शन आवश्यक" : cart[item.id] ? `Add more · ${cart[item.id]}` : "Add to cart / जोड़ें"}</Text>
       </Pressable>
     </View>
   );
@@ -245,7 +250,8 @@ const styles = StyleSheet.create({
   productMark: { height: 70, borderRadius: 12, backgroundColor: "#E8F3E9", alignItems: "center", justifyContent: "center", marginBottom: 8 },
   productMarkText: { color: "#236837", fontSize: 28, fontWeight: "800" },
   productName: { color: "#1E2620", fontSize: 13, fontWeight: "800", minHeight: 34 },
-  productMeta: { color: "#5E6A60", fontSize: 11, marginTop: 3 },
+  productMeta: { color: "#5E6A60", fontSize: 11, marginTop: 4 },
+  prescriptionText: { color: "#9C3B2E", fontSize: 10, fontWeight: "800", marginTop: 4 },
   addButton: { borderRadius: 10, backgroundColor: "#236837", paddingVertical: 9, paddingHorizontal: 6, marginTop: 10, alignItems: "center" },
   addButtonText: { color: "#FFFFFF", fontSize: 11, fontWeight: "800" },
   pressed: { opacity: 0.75, transform: [{ scale: 0.98 }] },
