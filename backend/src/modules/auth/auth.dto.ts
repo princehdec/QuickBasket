@@ -39,6 +39,8 @@ export type AuthResponseDTO = {
 export type OtpSendResponseDTO = {
   challengeId: string;
   expiresAt: string;
+  /** Present only when an explicit non-production test flag is enabled. */
+  testCode?: string;
 };
 
 export type UserProfileDTO = {

@@ -31,6 +31,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 - Customer mobile now loads live city-scoped businesses and products, supports product search, city switching, and a working local add-to-cart interaction with bilingual feedback.
 - Partner mobile now uses Expo SecureStore on native platforms, supports refresh and loading feedback, and only exposes valid delivery-job status transitions.
 - Vendor mobile now uses Expo SecureStore on native platforms, supports live order refresh, guarded order progression, and settlement feedback.
+- Console OTP delivery no longer logs phone numbers or plaintext codes; an explicit non-production `OTP_EXPOSE_TEST_CODE=false` gate is available for isolated API testing.
 - Shared UI primitives: `PageHeader`, `EmptyState`, `VegMark`, plus Badge
 
   variants (`offer`, `khata`, `success`) and Button variants (`accent`, `khata`).

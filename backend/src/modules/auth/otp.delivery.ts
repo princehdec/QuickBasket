@@ -3,11 +3,11 @@ export interface OtpDelivery {
 }
 
 export class ConsoleOtpDelivery implements OtpDelivery {
-  async send(phone: string, code: string): Promise<void> {
+  async send(_phone: string, _code: string): Promise<void> {
     if (process.env.NODE_ENV === "production") {
       throw new Error("OTP delivery provider is not configured for production");
     }
 
-    console.info(`[OTP development delivery] ${phone}: ${code}`);
+    console.info("[OTP development delivery] code redacted; use an explicitly enabled test channel when needed");
   }
 }

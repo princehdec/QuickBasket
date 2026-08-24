@@ -71,6 +71,9 @@ export class AuthService {
     return {
       challengeId: challenge.id,
       expiresAt: challenge.expiresAt.toISOString(),
+      ...(process.env.NODE_ENV !== "production" && process.env.OTP_EXPOSE_TEST_CODE === "true"
+        ? { testCode: code }
+        : {}),
     };
   }
 

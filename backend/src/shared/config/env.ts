@@ -18,6 +18,10 @@ const envSchema = z.object({
   SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
   OTP_PROVIDER: z.enum(["console", "email"]).default("console"),
+  OTP_EXPOSE_TEST_CODE: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true"),
   OTP_EMAIL_FROM: z.string().email().optional(),
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().optional(),
