@@ -17,6 +17,7 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().url().optional(),
   SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+  PRESCRIPTION_STORAGE_BUCKET: z.string().min(1).default("prescriptions"),
   OTP_PROVIDER: z.enum(["console", "email", "brevo_api"]).default("console"),
   OTP_EXPOSE_TEST_CODE: z
     .enum(["true", "false"])

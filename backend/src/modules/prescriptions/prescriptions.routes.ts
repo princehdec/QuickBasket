@@ -1,10 +1,15 @@
-import { Router, type Request, type Response } from "express";
+import express, { Router, type Request, type Response } from "express";
 import { authenticate } from "../../shared/middleware/authenticate";
 import { operationsOnly } from "../../shared/middleware/authorize";
 import { asyncHandler } from "../../shared/utils/asyncHandler";
 import { sendSuccess } from "../../shared/utils/apiResponse";
 import { ApiError } from "../../shared/utils/apiError";
 import { PrescriptionsService } from "./prescriptions.service";
+import {
+  PRESCRIPTION_MAX_FILE_SIZE_BYTES,
+  PRESCRIPTION_MIME_TYPES,
+  uploadPrescriptionDocument,
+} from "./prescriptions.storage";
 import {
   createPrescriptionSubmissionSchema,
   prescriptionSubmissionIdSchema,
@@ -13,6 +18,31 @@ import {
 
 const router: Router = Router();
 const service = new PrescriptionsService();
+const prescriptionUploadParser = express.raw({
+  type: [...PRESCRIPTION_MIME_TYPES],
+  limit: PRESCRIPTION_MAX_FILE_SIZE_BYTES,
+});
+
+router.post(
+  "/uploads",
+  authenticate,
+  prescriptionUploadParser,
+  asyncHandler(async (req: Request, res: Response) => {
+    const fileName = req.header("x-file-name")?.trim();
+    if (!fileName) throw ApiError.badRequest("x-file-name header is required");
+    if (!Buffer.isBuffer(req.body)) {
+      throw ApiError.badRequest("A PDF, JPEG, or PNG document is required");
+    }
+
+    const uploaded = await uploadPrescriptionDocument(
+      req.user!.sub,
+      fileName,
+      req.header("content-type")?.split(";", 1)[0]?.trim() ?? "",
+      req.body,
+    );
+    sendSuccess(res, uploaded, "Prescription document uploaded", 201);
+  }),
+);
 
 router.post(
   "/submissions",

@@ -323,3 +323,90 @@ export function markNotificationRead(id: string): Promise<CustomerNotification> 
     method: "PATCH",
   });
 }
+
+export type PrescriptionSubmission = {
+  id: string;
+  businessId: string;
+  documentKey: string;
+  documentFileName: string;
+  documentMimeType: string;
+  documentSizeBytes: number;
+  status: "pending" | "approved" | "rejected" | "expired";
+  rejectionReason: string | null;
+  expiresAt: string;
+  reviewedAt: string | null;
+  createdAt: string;
+};
+
+export type PrescriptionSubmissionItem = {
+  id: string;
+  submissionId: string;
+  productId: string;
+  quantity: number;
+};
+
+export type PrescriptionReviewEvent = {
+  id: string;
+  submissionId: string;
+  eventType: string;
+  actorId: string;
+  note: string | null;
+  createdAt: string;
+};
+
+export type PrescriptionSubmissionDetail = {
+  submission: PrescriptionSubmission;
+  items: PrescriptionSubmissionItem[];
+  events: PrescriptionReviewEvent[];
+};
+
+export type PrescriptionUpload = {
+  documentKey: string;
+  documentFileName: string;
+  documentMimeType: string;
+  documentSizeBytes: number;
+};
+
+export type CreatePrescriptionSubmissionInput = {
+  businessId: string;
+  items: Array<{ productId: string; quantity: number }>;
+  upload: PrescriptionUpload;
+};
+
+export async function uploadPrescriptionDocument(file: File): Promise<PrescriptionUpload> {
+  return authenticatedRequest<PrescriptionUpload>("/api/v1/prescriptions/uploads", {
+    method: "POST",
+    headers: {
+      "Content-Type": file.type,
+      "X-File-Name": file.name,
+    },
+    body: file,
+  });
+}
+
+export function createPrescriptionSubmission(
+  input: CreatePrescriptionSubmissionInput,
+): Promise<PrescriptionSubmission> {
+  return authenticatedRequest<PrescriptionSubmission>("/api/v1/prescriptions/submissions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      businessId: input.businessId,
+      items: input.items,
+      documentKey: input.upload.documentKey,
+      documentFileName: input.upload.documentFileName,
+      documentMimeType: input.upload.documentMimeType,
+      documentSizeBytes: input.upload.documentSizeBytes,
+    }),
+  });
+}
+
+export function listPrescriptionSubmissions(): Promise<PrescriptionSubmission[]> {
+  return authenticatedRequest<PrescriptionSubmission[]>("/api/v1/prescriptions/submissions");
+}
+
+export function getPrescriptionSubmission(id: string): Promise<PrescriptionSubmissionDetail> {
+  return authenticatedRequest<PrescriptionSubmissionDetail>(
+    `/api/v1/prescriptions/submissions/${encodeURIComponent(id)}`,
+  );
+}
