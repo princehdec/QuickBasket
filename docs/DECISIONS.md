@@ -12,7 +12,7 @@ Every entry follows: **Context → Decision → Consequences → Status**. Newes
 
 **Consequences:** Render can send OTP requests over HTTPS without SMTP egress. The test mode still sends every OTP to `OTP_EMAIL_TO`; it does not provide real phone delivery and is not launch-ready. The Brevo API key must never be committed, logged, or exposed to the browser. A future production launch still needs phone-capable OTP delivery and appropriate abuse controls.
 
-**Status:** Accepted for testing; implementation pending deployment secret and delivery verification.
+**Status:** Verified for fixed-inbox testing on 24 Aug 2026. Render returned HTTP 200 for the OTP request, logged delivery completion, and Brevo recorded the message as Sent and Delivered. This remains test-only and is not launch-ready phone OTP.
 
 ---
 
