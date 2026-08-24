@@ -66,7 +66,7 @@ export default function StorePage() {
   const grouped = useMemo(() => {
     const map = new Map<string, CustomerProduct[]>();
     for (const product of filteredProducts) {
-      const key = product.categoryName ?? "all-products";
+      const key = product.categorySlug ?? product.categoryName ?? "all-products";
       const list = map.get(key) ?? [];
       list.push(product);
       map.set(key, list);
@@ -75,9 +75,9 @@ export default function StorePage() {
   }, [filteredProducts]);
 
   const activeCategories = useMemo(
-    () => Array.from(grouped.keys()).map((id) => ({
+    () => Array.from(grouped.entries()).map(([id, categoryProducts]) => ({
       id,
-      name: id === "all-products" ? "All products" : id,
+      name: categoryProducts[0]?.categoryName ?? (id === "all-products" ? "All products" : id),
       slug: id,
     })),
     [grouped]

@@ -4,6 +4,7 @@ import {
   type Product,
   type NewProduct,
   businesses,
+  categories,
 } from "../../shared/schema/index";
 import {
   eq,
@@ -15,13 +16,19 @@ import {
   count,
   sql,
   type SQL,
+  getTableColumns,
 } from "drizzle-orm";
 
 export class ProductRepository {
-  async findById(id: string): Promise<Product | undefined> {
+  async findById(id: string): Promise<(Product & { categoryName: string | null; categorySlug: string | null }) | undefined> {
     const result = await db
-      .select()
+      .select({
+        ...getTableColumns(products),
+        categoryName: categories.name,
+        categorySlug: categories.slug,
+      })
       .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id))
       .where(and(eq(products.id, id), isNull(products.deletedAt)))
       .limit(1);
     return result[0];
@@ -63,7 +70,7 @@ export class ProductRepository {
     search?: string;
     page: number;
     limit: number;
-  }): Promise<{ items: Product[]; total: number }> {
+  }): Promise<{ items: Array<Product & { categoryName: string | null; categorySlug: string | null }>; total: number }> {
     const conditions: SQL[] = [isNull(products.deletedAt)];
 
     if (filters.businessId) {
@@ -90,8 +97,13 @@ export class ProductRepository {
     const where = and(...conditions);
 
     const items = await db
-      .select()
+      .select({
+        ...getTableColumns(products),
+        categoryName: categories.name,
+        categorySlug: categories.slug,
+      })
       .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id))
       .where(where)
       .orderBy(desc(products.createdAt))
       .limit(filters.limit)

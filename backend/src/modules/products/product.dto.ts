@@ -34,6 +34,8 @@ export type ProductResponseDTO = {
   id: string;
   businessId: string;
   categoryId: string;
+  categoryName: string | null;
+  categorySlug: string | null;
   name: string;
   slug: string;
   description: string | null;

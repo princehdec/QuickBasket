@@ -44,6 +44,7 @@ export type CustomerProduct = {
   businessId: string;
   categoryId: string;
   categoryName: string | null;
+  categorySlug: string | null;
   name: string;
   unit: string;
   price: number;
@@ -65,6 +66,7 @@ export function normalizeCustomerProduct(
     ...product,
     businessId: product.storeId,
     categoryName: null,
+    categorySlug: null,
     images: [],
     description: null,
     brand: null,
@@ -156,7 +158,7 @@ export function toCustomerStore(business: CustomerBusiness): CustomerStore {
   };
 }
 
-export function toCustomerProduct(product: Omit<CustomerProduct, "storeId" | "price" | "originalPrice" | "image" | "unit" | "isVeg" | "categoryName"> & {
+export function toCustomerProduct(product: Omit<CustomerProduct, "storeId" | "price" | "originalPrice" | "image" | "unit" | "isVeg" | "categoryName" | "categorySlug"> & {
   businessId: string;
   price: string | number;
   originalPrice?: string | number | null;
@@ -164,6 +166,7 @@ export function toCustomerProduct(product: Omit<CustomerProduct, "storeId" | "pr
   unit?: string | null;
   isVeg?: boolean | null;
   categoryName?: string | null;
+  categorySlug?: string | null;
 }): CustomerProduct {
   const images = product.images ?? [];
   const price = Number(product.price);
@@ -173,6 +176,7 @@ export function toCustomerProduct(product: Omit<CustomerProduct, "storeId" | "pr
     ...product,
     storeId: product.businessId,
     categoryName: product.categoryName ?? null,
+    categorySlug: product.categorySlug ?? null,
     unit: product.unit ?? "1 unit",
     price: Number.isFinite(price) ? price : 0,
     originalPrice: originalPrice !== undefined && Number.isFinite(originalPrice) ? originalPrice : undefined,

@@ -27,11 +27,15 @@ function toResponseDTO(product: {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
+  categoryName?: string | null;
+  categorySlug?: string | null;
 }): ProductResponseDTO {
   return {
     id: product.id,
     businessId: product.businessId,
     categoryId: product.categoryId,
+    categoryName: product.categoryName ?? null,
+    categorySlug: product.categorySlug ?? null,
     name: product.name,
     slug: product.slug,
     description: product.description,
