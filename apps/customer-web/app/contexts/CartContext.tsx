@@ -8,16 +8,20 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Product } from "../../lib/mock/products";
+import {
+  normalizeCustomerProduct,
+  type CustomerProduct,
+  type LegacyCustomerProduct,
+} from "../../lib/api";
 
 export type CartItem = {
-  product: Product;
+  product: CustomerProduct;
   quantity: number;
 };
 
 type CartContextType = {
   items: CartItem[];
-  addItem: (product: Product) => void;
+  addItem: (product: CustomerProduct | LegacyCustomerProduct) => void;
   removeItem: (productId: string) => void;
   increaseQuantity: (productId: string) => void;
   decreaseQuantity: (productId: string) => void;
@@ -31,17 +35,18 @@ const CartContext = createContext<CartContextType | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addItem = useCallback((product: Product) => {
+  const addItem = useCallback((product: CustomerProduct | LegacyCustomerProduct) => {
+    const normalizedProduct = normalizeCustomerProduct(product);
     setItems((prev) => {
-      const existing = prev.find((i) => i.product.id === product.id);
+      const existing = prev.find((i) => i.product.id === normalizedProduct.id);
       if (existing) {
         return prev.map((i) =>
-          i.product.id === product.id
+            i.product.id === normalizedProduct.id
             ? { ...i, quantity: i.quantity + 1 }
             : i
         );
       }
-      return [...prev, { product, quantity: 1 }];
+      return [...prev, { product: normalizedProduct, quantity: 1 }];
     });
   }, []);
 

@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import type { Product } from "../../../lib/mock/products";
+import type { CustomerProduct } from "../../../lib/api";
 import { useCart } from "../../contexts/CartContext";
 import { QuantitySelector } from "../cart/QuantitySelector";
 import { VegMark } from "../ui/VegMark";
+import { useLang } from "../../i18n/LanguageContext";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product }: { product: CustomerProduct }) {
+  const { t } = useLang();
   const { items, addItem, increaseQuantity, decreaseQuantity } = useCart();
   const cartItem = items.find((i) => i.product.id === product.id);
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
@@ -25,7 +27,7 @@ export function ProductCard({ product }: { product: Product }) {
     >
       {product.isBestseller && (
         <span className="pointer-events-none absolute left-2 top-2 z-10 rounded-full bg-turmeric-400 px-2 py-0.5 text-[10px] font-bold text-[#33230a]">
-          Bestseller
+          {t("Bestseller")}
         </span>
       )}
 
@@ -38,7 +40,7 @@ export function ProductCard({ product }: { product: Product }) {
         >
           {hasDiscount && (
             <span className="pointer-events-none absolute right-1 top-1 rounded-full bg-turmeric-500 px-2 py-0.5 text-[10px] font-bold text-white">
-              {discountPercent}% OFF
+              {discountPercent}% {t("OFF")}
             </span>
           )}
           {product.isVeg && (
@@ -77,7 +79,7 @@ export function ProductCard({ product }: { product: Product }) {
             className="flex h-8 w-full items-center justify-center gap-1 rounded-button bg-brand-100 font-display text-sm font-bold text-brand-800 transition-all duration-150 hover:bg-brand-600 hover:text-paper-50 active:scale-[0.97]"
           >
             <Plus size={14} />
-            Add
+            {t("Add")}
           </button>
         )}
       </div>

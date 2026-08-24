@@ -1,12 +1,11 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Construction } from "lucide-react";
-import { stores } from "../../../lib/mock/stores";
-import { products } from "../../../lib/mock/products";
-import { categories } from "../../../lib/mock/categories";
+import { ArrowLeft, Construction, Loader2 } from "lucide-react";
+import { getBusiness, listProducts, toCustomerStore, type CustomerProduct } from "../../../lib/api";
+import type { Store } from "../../../lib/dummyStores";
 import { StoreHeader } from "../../components/store/StoreHeader";
 import { StoreInfoBar } from "../../components/store/StoreInfoBar";
 import { CategoryTabs } from "../../components/store/CategoryTabs";
@@ -16,38 +15,71 @@ import { EmptyState } from "../../components/ui/EmptyState";
 
 export default function StorePage() {
   const { storeId } = useParams<{ storeId: string }>();
-  const store = stores.find((s) => s.id === storeId);
+  const [store, setStore] = useState<Store | null>(null);
+  const [products, setProducts] = useState<CustomerProduct[]>([]);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const storeProducts = useMemo(
-    () => products.filter((p) => p.storeId === storeId),
-    [storeId]
-  );
+  useEffect(() => {
+    let cancelled = false;
+    setIsLoading(true);
+    setError(null);
+
+    Promise.all([
+      getBusiness(storeId),
+      listProducts({ businessId: storeId, isAvailable: true, limit: 50 }),
+    ])
+      .then(([business, productResult]) => {
+        if (cancelled) return;
+        setStore(toCustomerStore(business));
+        setProducts(productResult.items);
+      })
+      .catch((cause: unknown) => {
+        if (!cancelled) {
+          setError(cause instanceof Error ? cause.message : "Unable to load this store");
+          setStore(null);
+          setProducts([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [storeId]);
 
   const filteredProducts = useMemo(() => {
-    if (!search) return storeProducts;
+    if (!search) return products;
     const q = search.toLowerCase();
-    return storeProducts.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.categoryId.toLowerCase().includes(q)
+    return products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(q) ||
+        product.brand?.toLowerCase().includes(q) ||
+        product.categoryName?.toLowerCase().includes(q)
     );
-  }, [storeProducts, search]);
+  }, [products, search]);
 
   const grouped = useMemo(() => {
-    const map = new Map<string, typeof filteredProducts>();
-    for (const p of filteredProducts) {
-      const list = map.get(p.categoryId) || [];
-      list.push(p);
-      map.set(p.categoryId, list);
+    const map = new Map<string, CustomerProduct[]>();
+    for (const product of filteredProducts) {
+      const key = product.categoryName ?? "all-products";
+      const list = map.get(key) ?? [];
+      list.push(product);
+      map.set(key, list);
     }
     return map;
   }, [filteredProducts]);
 
   const activeCategories = useMemo(
-    () => categories.filter((c) => grouped.has(c.id)),
+    () => Array.from(grouped.keys()).map((id) => ({
+      id,
+      name: id === "all-products" ? "All products" : id,
+      slug: id,
+    })),
     [grouped]
   );
 
@@ -60,13 +92,21 @@ export default function StorePage() {
     }
   };
 
-  if (!store) {
+  if (isLoading) {
+    return (
+      <div className="hero-wash flex min-h-screen items-center justify-center">
+        <Loader2 className="animate-spin text-brand-700" aria-label="Loading store" />
+      </div>
+    );
+  }
+
+  if (error || !store) {
     return (
       <div className="hero-wash flex min-h-screen flex-col items-center justify-center px-4">
         <EmptyState
           icon={Construction}
           title="Store not found"
-          description="The store you're looking for doesn't exist or may have been removed."
+          description={error ?? "The store you're looking for doesn't exist or may have been removed."}
           action={
             <Link href="/stores">
               <Button variant="outline" size="md">

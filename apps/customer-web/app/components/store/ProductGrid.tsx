@@ -1,30 +1,32 @@
 "use client";
 
 import { PackageSearch } from "lucide-react";
-import type { Category } from "../../../lib/mock/categories";
-import type { Product } from "../../../lib/mock/products";
+import type { CustomerProduct } from "../../../lib/api";
+type StoreCategory = { id: string; name: string };
 import { ProductCard } from "./ProductCard";
 import { EmptyState } from "../ui/EmptyState";
+import { useLang } from "../../i18n/LanguageContext";
 
 export function ProductGrid({
   groups,
   categories,
   searchQuery,
 }: {
-  groups: Map<string, Product[]>;
-  categories: Category[];
+  groups: Map<string, CustomerProduct[]>;
+  categories: StoreCategory[];
   searchQuery: string;
 }) {
+  const { t } = useLang();
   if (groups.size === 0) {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <EmptyState
           icon={PackageSearch}
-          title="No products found"
+          title={t("No products found")}
           description={
             searchQuery
-              ? `No products match "${searchQuery}". Try a different search term.`
-              : "This store has no products yet."
+              ? `${t("No products match")} "${searchQuery}"${t(". Try a different search term.")}`
+              : t("This store has no products yet.")
           }
         />
       </div>
