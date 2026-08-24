@@ -1,4 +1,6 @@
 export {
+  getPaymentGateway,
+  RazorpayGateway,
   UnconfiguredPaymentGateway,
   type CreatePaymentInput,
   type OnlinePaymentMethod,
