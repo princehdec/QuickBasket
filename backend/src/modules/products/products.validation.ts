@@ -27,6 +27,7 @@ export const createProductSchema = z.object({
   isVeg: z.boolean().optional(),
   isBestseller: z.boolean().optional(),
   stock: z.number().int().min(0).optional(),
+  requiresPrescription: z.boolean().optional(),
 });
 
 export const updateProductSchema = z.object({
@@ -56,6 +57,7 @@ export const updateProductSchema = z.object({
   isVeg: z.boolean().optional(),
   isBestseller: z.boolean().optional(),
   stock: z.number().int().min(0).optional(),
+  requiresPrescription: z.boolean().optional(),
   isActive: z.boolean().optional(),
 });
 

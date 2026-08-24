@@ -23,6 +23,7 @@ function toResponseDTO(product: {
   isVeg: boolean | null;
   isBestseller: boolean;
   stock: number;
+  requiresPrescription: boolean;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -47,6 +48,7 @@ function toResponseDTO(product: {
     isVeg: product.isVeg,
     isBestseller: product.isBestseller,
     stock: product.stock,
+    requiresPrescription: product.requiresPrescription,
     isActive: product.isActive,
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
@@ -87,6 +89,7 @@ export class ProductService {
       isVeg: dto.isVeg ?? null,
       isBestseller: dto.isBestseller ?? false,
       stock: dto.stock ?? 0,
+      requiresPrescription: dto.requiresPrescription ?? false,
     });
 
     return toResponseDTO(product);

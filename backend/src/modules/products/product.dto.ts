@@ -12,6 +12,7 @@ export type CreateProductDTO = {
   isVeg?: boolean;
   isBestseller?: boolean;
   stock?: number;
+  requiresPrescription?: boolean;
 };
 
 export type UpdateProductDTO = {
@@ -27,6 +28,7 @@ export type UpdateProductDTO = {
   isVeg?: boolean;
   isBestseller?: boolean;
   stock?: number;
+  requiresPrescription?: boolean;
   isActive?: boolean;
 };
 
@@ -47,6 +49,7 @@ export type ProductResponseDTO = {
   isVeg: boolean | null;
   isBestseller: boolean;
   stock: number;
+  requiresPrescription: boolean;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

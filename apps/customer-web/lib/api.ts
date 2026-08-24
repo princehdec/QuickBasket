@@ -56,6 +56,7 @@ export type CustomerProduct = {
   isVeg: boolean;
   isBestseller: boolean;
   stock: number;
+  requiresPrescription: boolean;
 };
 
 export function normalizeCustomerProduct(
@@ -72,6 +73,7 @@ export function normalizeCustomerProduct(
     brand: null,
     isBestseller: product.isBestseller ?? false,
     stock: 999,
+    requiresPrescription: false,
   };
 }
 
@@ -167,6 +169,7 @@ export function toCustomerProduct(product: Omit<CustomerProduct, "storeId" | "pr
   isVeg?: boolean | null;
   categoryName?: string | null;
   categorySlug?: string | null;
+  requiresPrescription?: boolean;
 }): CustomerProduct {
   const images = product.images ?? [];
   const price = Number(product.price);
@@ -185,6 +188,7 @@ export function toCustomerProduct(product: Omit<CustomerProduct, "storeId" | "pr
     isVeg: product.isVeg ?? false,
     isBestseller: product.isBestseller ?? false,
     stock: product.stock ?? 0,
+    requiresPrescription: product.requiresPrescription ?? false,
   };
 }
 

@@ -81,6 +81,11 @@ export class OrdersService {
       throw ApiError.badRequest("One or more products are unavailable for this business");
     }
 
+    const prescriptionRequired = productRows.some((product) => product.requiresPrescription);
+    if (prescriptionRequired) {
+      throw ApiError.badRequest("Prescription verification is required before ordering this product");
+    }
+
     const productById = new Map(productRows.map((product) => [product.id, product]));
     let subtotal = 0;
     for (const item of dto.items) {

@@ -39,6 +39,7 @@ export function ProductInfo({
       </div>
 
       <p className="mt-1 text-sm text-gray-500">{product.unit}</p>
+      {product.requiresPrescription && <p className="mt-2 inline-flex rounded-full bg-khata-100 px-3 py-1 text-xs font-bold text-khata-700">{t("Prescription required / प्रिस्क्रिप्शन आवश्यक")}</p>}
 
       <div className="mt-3 flex items-center gap-3">
         <span className="inline-flex items-center gap-1 rounded-full bg-brand-100 px-2.5 py-0.5 text-sm font-bold tabular-nums text-brand-800">
@@ -98,10 +99,10 @@ export function ProductInfo({
           <button
             type="button"
             onClick={() => addItem(product)}
-            disabled={detail.stockStatus === "out_of_stock"}
+            disabled={detail.stockStatus === "out_of_stock" || product.requiresPrescription}
             className="flex h-12 w-full max-w-xs items-center justify-center gap-2 rounded-button bg-brand-600 font-display text-sm font-bold text-paper-50 shadow-[0_3px_12px_-3px_rgb(18_50_30/0.5)] transition-all duration-200 hover:bg-brand-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {t("Add to Cart")} — ₹{product.price}
+            {product.requiresPrescription ? t("Prescription verification required / प्रिस्क्रिप्शन सत्यापन आवश्यक") : `${t("Add to Cart")} — ₹${product.price}`}
           </button>
         )}
       </div>

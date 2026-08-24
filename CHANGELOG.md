@@ -34,6 +34,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/) — newes
 - Console OTP delivery no longer logs phone numbers or plaintext codes; an explicit non-production `OTP_EXPOSE_TEST_CODE=false` gate is available for isolated API testing.
 - Payment routes now capture the raw Razorpay webhook body, verify `x-razorpay-signature`, validate payment amounts, return correct error statuses, and apply idempotent captured/failed/refunded state transitions to payment and order records.
 - Customer mobile now includes phone-OTP send/verify controls with native SecureStore token persistence and a sign-out action; the OTP test code remains disabled by default.
+- Product APIs and vendor validation now expose and manage `requiresPrescription`; the order service rejects prescription-required items until an approved prescription-order workflow is implemented, and customer cards/detail pages clearly disable unsafe additions.
 - Admin web now has refreshable live dispatch metrics, an assignment form without fake default earnings, and one-click selection of unassigned orders.
 - Shared UI primitives: `PageHeader`, `EmptyState`, `VegMark`, plus Badge
 

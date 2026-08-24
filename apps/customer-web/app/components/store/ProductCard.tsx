@@ -51,6 +51,7 @@ export function ProductCard({ product }: { product: CustomerProduct }) {
         <div>
           <h4 className="truncate text-sm font-semibold text-gray-900">{product.name}</h4>
           <p className="mt-0.5 text-xs text-gray-500">{product.unit}</p>
+          {product.requiresPrescription && <p className="mt-1 text-[10px] font-bold text-khata-700">{t("Prescription required / प्रिस्क्रिप्शन आवश्यक")}</p>}
 
           <div className="mt-2 flex items-baseline gap-1.5 tabular-nums">
             <span className="font-display text-sm font-bold text-gray-900">₹{product.price}</span>
@@ -75,11 +76,12 @@ export function ProductCard({ product }: { product: CustomerProduct }) {
           <button
             type="button"
             onClick={() => addItem(product)}
+            disabled={product.requiresPrescription}
             aria-label={`Add ${product.name} to cart`}
-            className="flex h-8 w-full items-center justify-center gap-1 rounded-button bg-brand-100 font-display text-sm font-bold text-brand-800 transition-all duration-150 hover:bg-brand-600 hover:text-paper-50 active:scale-[0.97]"
+            className="flex h-8 w-full items-center justify-center gap-1 rounded-button bg-brand-100 font-display text-sm font-bold text-brand-800 transition-all duration-150 hover:bg-brand-600 hover:text-paper-50 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Plus size={14} />
-            {t("Add")}
+            {product.requiresPrescription ? t("Prescription required") : t("Add")}
           </button>
         )}
       </div>
