@@ -46,8 +46,8 @@ export function PlaceOrderButton() {
     if (!canPlaceOrder || !selectedAddress || !paymentMethod) { setError(t("Please select a delivery address and payment method.")); return; }
     const accessToken = getAccessToken();
     if (!accessToken) { setError(t("Please verify your phone number before placing an order.")); return; }
-    const businessId = items[0]?.product.storeId;
-    if (!businessId || items.some((item) => item.product.storeId !== businessId)) { setError(t("Please order from one store at a time.")); return; }
+    const businessId = items[0]?.product.businessId;
+    if (!businessId || items.some((item) => item.product.businessId !== businessId)) { setError(t("Please order from one store at a time.")); return; }
 
     setLoading(true); setError("");
     try {
