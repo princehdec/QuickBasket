@@ -23,6 +23,7 @@ const envSchema = z.object({
     .default("false")
     .transform((value) => value === "true"),
   OTP_EMAIL_FROM: z.string().email().optional(),
+  OTP_EMAIL_TO: z.string().email().optional(),
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().optional(),
   SMTP_USER: z.string().optional(),

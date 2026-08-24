@@ -4,6 +4,18 @@ Every entry follows: **Context → Decision → Consequences → Status**. Newes
 
 ---
 
+## ADR-014: Fixed-Inbox SMTP OTP for Testing
+
+**Context:** The founder selected phone OTP as the launch authentication method, but the current test phase needs a real delivery channel without yet committing to an SMS vendor or spending on live messaging.
+
+**Decision:** Use a swappable SMTP adapter that sends every test OTP to one configured fixed inbox. The OTP code remains redacted from logs and is never returned by the API unless an explicitly enabled non-production test flag is used. This channel is for testing only; it is not sufficient for public customer login because the login request still identifies customers by phone number.
+
+**Consequences:** Testing requires `OTP_PROVIDER=email`, SMTP settings, `OTP_EMAIL_FROM`, and `OTP_EMAIL_TO` in deployment configuration. A production launch still requires a phone-capable SMS provider, rate limiting, delivery monitoring, and provider credentials stored outside source control.
+
+**Status:** Accepted for testing; not launch-ready.
+
+---
+
 ## ADR-013: Launch Cities, Serviceability, and Delivery Supply
 
 **Context:** The founder selected Lucknow and Gopalganj as the first launch locations and wants both managed/in-house riders and third-party delivery partners.

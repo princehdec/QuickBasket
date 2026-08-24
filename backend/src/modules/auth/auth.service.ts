@@ -8,7 +8,7 @@ import {
 } from "../../shared/utils/jwt";
 import { hashPassword, comparePassword } from "../../shared/utils/password";
 import { AuthRepository } from "./auth.repository";
-import { ConsoleOtpDelivery, type OtpDelivery } from "./otp.delivery";
+import { createOtpDelivery, type OtpDelivery } from "./otp.delivery";
 import type {
   AuthResponseDTO,
   AuthTokensDTO,
@@ -50,7 +50,7 @@ export class AuthService {
   private readonly repo: AuthRepository;
   private readonly otpDelivery: OtpDelivery;
 
-  constructor(repo = new AuthRepository(), otpDelivery = new ConsoleOtpDelivery()) {
+  constructor(repo = new AuthRepository(), otpDelivery = createOtpDelivery()) {
     this.repo = repo;
     this.otpDelivery = otpDelivery;
   }
